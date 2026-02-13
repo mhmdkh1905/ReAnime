@@ -2,7 +2,11 @@ import "../styles/login-register.css";
 import { useState } from "react";
 import logoImg from "../assets/logo.jpg";
 import { Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 
@@ -24,8 +28,13 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("User loggen in succesfully");
+    navigate("/");
+    //add user to db
   };
 
   return (
