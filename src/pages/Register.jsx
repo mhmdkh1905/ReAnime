@@ -4,10 +4,8 @@ import logoImg from "../assets/logo.jpg";
 import { GoArrowLeft } from "react-icons/go";
 import { IoPersonSharp } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { auth, db } from "../firebase/firebase.js";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../services/authService";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -18,20 +16,13 @@ export default function Register() {
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      console.log(user);
-      if (user) {
-        await setDoc(doc(db, "Users", user.uid), {
-          name: name,
-          email: user.email,
-        });
-      }
-      console.log("User Register Successfully");
+      const user = await registerUser(name, email, password);
+      console.log("Registered:", user.uid);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 

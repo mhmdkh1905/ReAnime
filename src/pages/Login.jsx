@@ -2,13 +2,8 @@ import "../styles/login-register.css";
 import { useState } from "react";
 import logoImg from "../assets/logo.jpg";
 import { Link } from "react-router-dom";
-import {
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
-import { auth } from "../firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import { loginUser, loginWithGoogle } from "../services/authService";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,23 +13,24 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", { email, password });
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("User loggen in succesfully");
+      const user = await loginUser(email, password);
+      console.log("User logged in:", user.uid);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log("User loggen in succesfully");
-    navigate("/");
-    //add user to db
+    try {
+      const user = await loginWithGoogle();
+      console.log("Google login:", user.uid);
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -135,9 +131,9 @@ export default function Login() {
         </form>
 
         <div className="footer-links">
-          <a href="#forgot" className="link">
+          <Link to="/forget-password" className="link">
             Forgot password?
-          </a>
+          </Link>
           <span className="footer-text">
             Need an account?{" "}
             <Link to="/register" className="link">
