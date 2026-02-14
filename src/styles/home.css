@@ -1,0 +1,23 @@
+.home {
+  color: #ffffff;
+  background-color: aqua;
+  padding: 10px 350px;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: center;
+}
+
+.title {
+  color: #c37bff;
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.description {
+  color: #aa9cbc;
+  font-size: 1rem;
+  text-align: center;
+}
