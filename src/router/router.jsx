@@ -6,6 +6,7 @@ import Movie from "../pages/Movie";
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ForgetPassword from "../pages/ForgetPassword";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/forget-password",
+    element: <ForgetPassword />,
   },
 ]);
 
