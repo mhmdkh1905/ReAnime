@@ -1,7 +1,23 @@
 import "../styles/home.css";
 import MovieCard from "../components/movie/MovieCard.jsx";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { useAuth } from "../context/AuthContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig.js";
 
 export default function Home() {
+  const { currentUser, userLoggedIn } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div className="home">
       <div className="content">
