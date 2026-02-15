@@ -31,7 +31,7 @@ export default function Register() {
       <div className="login-card">
         <Link to="/login" className="link">
           <div className="back-container">
-            <GoArrowLeft />
+            <GoArrowLeft className="arrow" />
             Back to sign in
           </div>
         </Link>

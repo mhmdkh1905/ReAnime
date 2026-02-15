@@ -3,10 +3,10 @@ import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "../components/layout/RootLayout";
 import Home from "../pages/Home";
 import Movie from "../pages/Movie";
-import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgetPassword from "../pages/ForgetPassword";
+import Profile from "../pages/Profile";
 
 const router = createBrowserRouter([
   {

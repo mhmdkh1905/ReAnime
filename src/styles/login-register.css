@@ -176,14 +176,7 @@
   color: #6b7280;
 }
 
-.back-container {
-  display: flex;
-  direction: row;
-  gap: 10px;
 
-  justify-content: start;
-  align-items: center;
-}
 
 @media (max-width: 480px) {
   .login-card {

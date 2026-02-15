@@ -1,23 +1,25 @@
-.home {
-  color: #ffffff;
-  background-color: aqua;
-  padding: 10px 350px;
-}
-.content {
+.home-container {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  align-items: center;
+  gap: 20px;
+  color: white;
+  margin: 10px 312px;
+  padding: 0px 20px;
+  background-color: blue;
 }
 
-.title {
-  color: #c37bff;
-  font-size: 4rem;
-  font-weight: bold;
+.home-container .title {
+  color: #c579ff;
+  font-size: 48px;
+  font-weight: 60px;
 }
 
-.description {
+.home-container .sub-title {
   color: #aa9cbc;
-  font-size: 1rem;
-  text-align: center;
+}
+.home-container .trending-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-start;
 }
