@@ -90,6 +90,19 @@ export const getCurrentUser = () => {
   return auth.currentUser;
 };
 
+//Reset password
 export const resetPassword = async (email) => {
   await sendPasswordResetEmail(auth, email);
+};
+
+//Get user details
+export const getUserProfile = async (uid) => {
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    return userSnap.data();
+  } else {
+    return null;
+  }
 };

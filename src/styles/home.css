@@ -1,4 +1,4 @@
-.home {
+/* .home {
   color: #ffffff;
   background-color: aqua;
   padding: 10px 350px;
@@ -20,4 +20,130 @@
   color: #aa9cbc;
   font-size: 1rem;
   text-align: center;
+} */
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #000;
+  color: white;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 60px;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 22px;
+  background: linear-gradient(90deg, #ff00cc, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.search-input {
+  width: 300px;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #6a00ff;
+  background: transparent;
+  color: white;
+}
+
+.profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a1a;
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #6a00ff;
+}
+
+.avatar-circle {
+  width: 30px;
+  height: 30px;
+  background: #6a00ff;
+  border-radius: 50%;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #ff00cc, #00ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  margin-top: 20px;
+  color: #aaa;
+}
+
+/* SECTION */
+.section {
+  padding: 40px 60px;
+}
+
+.section h2 {
+  margin-bottom: 20px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+/* MOVIE CARD */
+.movie-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.movie-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #6a00ff;
+}
+
+.movie-overlay {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.badge.Movie {
+  background: #ff0077;
+}
+
+.badge.Series {
+  background: #00cfff;
 }
