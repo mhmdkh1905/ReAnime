@@ -3,23 +3,18 @@ import "../../styles/MovieCard.css";
 export default function MovieCard({ title, image, type, trending }) {
   return (
     <div className="movie-card">
-      <div className="movie-image">
-        <img src={image} alt={title} />
-        <div className="overlay">
-          <div className="movie-info">
-            <h2>{title}</h2>
+      <img src={image} className="movie-image" />
 
-            <div className="movie-meta">
-              <span className="badge">{type}</span>
-            </div>
-            {trending === "true" && (
-              <div className="trending">
-                <span className="dot"></span>
-                Trending
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="movie-gradient"></div>
+
+      <div className="trending">
+        <div className="dot"></div>
+        Trending
+      </div>
+
+      <div className="movie-content">
+        <h3 className="movie-title">{title}</h3>
+        <span className={`movie-badge ${type.toLowerCase()}`}>{type}</span>
       </div>
     </div>
   );

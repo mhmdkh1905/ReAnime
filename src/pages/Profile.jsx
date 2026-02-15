@@ -1,6 +1,6 @@
 import "../styles/user-profile.css";
 import { GoArrowLeft } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -13,15 +13,12 @@ import { getUserProfile } from "../services/authService";
 export default function Profile() {
   const { currentUser } = useAuth();
   const [profile, setProfile] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     async function fetchProfile() {
       if (currentUser) {
         const data = await getUserProfile(currentUser.uid);
         setProfile(data);
-        console.log(data);
-      } else {
-        console.log("there is no user");
       }
     }
 
@@ -35,13 +32,20 @@ export default function Profile() {
   return (
     <div className="profile-page">
       <div className="container">
-        <button className="back-btn">← Back to Home</button>
+        <button
+          className="back-btn"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          ← Back to Home
+        </button>
 
         {/* Profile Card */}
         <div className="profile-card">
           <div className="profile-left">
             <div className="avatar">
-              <img src="https://i.pravatar.cc/150?img=12" alt="avatar" />
+              <img src={profile.photoURL} alt="avatar" />
             </div>
 
             <div>

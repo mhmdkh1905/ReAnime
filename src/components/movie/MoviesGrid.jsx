@@ -1,14 +1,6 @@
-// import React from 'react'
-
-// export default function MoviesGrid() {
-//   return (
-//     <div>MoviesGrid</div>
-//   )
-// }
-
 import MovieCard from "./MovieCard";
 
-export default function GridSection({ title, data }) {
+export default function MoviesGrid({ title, data }) {
   return (
     <section className="section">
       <h2>{title}</h2>

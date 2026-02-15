@@ -1,76 +1,88 @@
 .movie-card {
-  width: 260px;
+  position: relative;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  position: relative;
-  border: 1px solid #c37bff;
+  transition: 0.3s ease;
+  width: 220px;
+  height: 320px;
 }
 
+/* IMAGE */
 .movie-image {
-  position: relative;
-  overflow: hidden;
-}
-
-.movie-image img {
-  width: 100%;
-  height: 380px;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.movie-card:hover img {
-  transform: scale(1.1);
-}
-
-.overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.8),
-    rgba(0, 0, 0, 0.2),
-    transparent
-  );
+  object-fit: cover;
+  transition: 0.4s ease;
+}
+
+/* GRADIENT OVERLAY */
+.movie-gradient {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+}
+
+/* CONTENT */
+.movie-content {
+  position: absolute;
+  bottom: 30px;
+  left: 15px;
+  right: 15px;
   display: flex;
-  align-items: flex-end;
-  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.movie-info h2 {
-  color: white;
+.movie-title {
+  font-size: 16px;
+  font-weight: 600;
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
 }
 
-.movie-meta {
-  margin-top: 8px;
-}
-
-.badge {
-  background: rgba(255, 0, 150, 0.8);
+/* BADGE */
+.movie-badge {
   padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 13px;
-  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.movie-badge.movie {
+  background: #ff0077;
+}
+
+.movie-badge.series {
+  background: #00cfff;
+}
+
+/* HOVER EFFECT */
+.movie-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 25px #6a00ff;
+}
+
+.movie-card:hover .movie-image {
+  transform: scale(1.05);
 }
 
 .trending {
-  margin-top: 8px;
-  color: #ffd700;
-  font-size: 14px;
+  position: absolute;
+  bottom: 15px; /* 👈 change from top to bottom */
+  left: 15px;
   display: flex;
   align-items: center;
   gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 2;
+  color: yellow;
 }
-
 .dot {
   width: 8px;
   height: 8px;
-  background: #ffd700;
+  background-color: yellow;
   border-radius: 50%;
 }
