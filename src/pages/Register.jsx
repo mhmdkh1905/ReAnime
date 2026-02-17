@@ -25,11 +25,14 @@ export default function Register() {
       const user = await registerUser(name, email, password);
       console.log("Registered user:", user);
 
-      // ✅ תראה גם שהגענו לכאן
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     } catch (error) {
       console.log("REGISTER ERROR FULL:", error);
-      setErr(error?.code ? `${error.code}: ${error.message}` : (error?.message || "Register failed"));
+      setErr(
+        error?.code
+          ? `${error.code}: ${error.message}`
+          : error?.message || "Register failed",
+      );
     } finally {
       setLoading(false);
     }

@@ -38,7 +38,9 @@ export const loginWithGoogle = async () => {
       uid: user.uid,
       name: user.displayName || "",
       email: user.email,
-      photoURL: user.photoURL || "",
+      photoURL: user.photoURL || "https://i.pravatar.cc/120?img=3",
+      totalLikes: 0,
+      totalPosterScenarios: 0,
       createdAt: new Date(),
       role: "user",
     });
@@ -69,7 +71,9 @@ export const registerUser = async (name, email, password) => {
     email: user.email,
     createdAt: new Date(),
     role: "user",
-    photoURL: "",
+    photoURL: "https://i.pravatar.cc/120?img=3",
+    totalLikes: 0,
+    totalPosterScenarios: 0,
   });
 
   return user;
