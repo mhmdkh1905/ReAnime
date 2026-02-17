@@ -1,12 +1,9 @@
 import "../styles/user-profile.css";
-import { GoArrowLeft } from "react-icons/go";
-import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaRegHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { AiOutlineLike } from "react-icons/ai";
-import { AiOutlineDislike } from "react-icons/ai";
-import { FaRegComment } from "react-icons/fa";
+import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../services/authService";
 
@@ -14,6 +11,7 @@ export default function Profile() {
   const { currentUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     async function fetchProfile() {
       if (currentUser) {
@@ -21,41 +19,42 @@ export default function Profile() {
         setProfile(data);
       }
     }
-
     fetchProfile();
   }, [currentUser]);
 
   if (!profile) {
-    return <div>Loading...</div>;
+    return (
+      <div className="profile-page">
+        <div className="container">
+          <div className="loadingCard">Loading profile...</div>
+        </div>
+      </div>
+    );
   }
+
+  const avatarSrc = profile.photoURL || "https://i.pravatar.cc/120?img=3";
 
   return (
     <div className="profile-page">
       <div className="container">
-        <button
-          className="back-btn"
-          onClick={() => {
-            navigate("/");
-          }}
-        >
+        <button className="back-btn" onClick={() => navigate("/")}>
           ← Back to Home
         </button>
 
-        {/* Profile Card */}
         <div className="profile-card">
           <div className="profile-left">
             <div className="avatar">
-              <img src={profile.photoURL} alt="avatar" />
+              <img src={avatarSrc} alt="avatar" />
             </div>
 
             <div>
-              <h2 className="username">{profile.name}</h2>
+              <h2 className="username">{profile.name || "User"}</h2>
 
               <div className="stats">
                 <div className="stat">
                   <div className="stat-number">
                     <IoDocumentTextOutline className="document-icon" />
-                    <span>{profile.totalPosterScenarios}</span>
+                    <span>{profile.totalPosterScenarios || 0}</span>
                   </div>
                   <span className="stat-label">Scenarios Posted</span>
                 </div>
@@ -63,7 +62,7 @@ export default function Profile() {
                 <div className="stat">
                   <div className="stat-number">
                     <FaRegHeart className="heart-icon" />
-                    <span>{profile.totalLikes}</span>
+                    <span>{profile.totalLikes || 0}</span>
                   </div>
                   <span className="stat-label">Total Likes</span>
                 </div>
@@ -74,7 +73,6 @@ export default function Profile() {
           <button className="edit-btn">Edit Profile</button>
         </div>
 
-        {/* Scenarios */}
         <h3 className="section-title">My Scenarios</h3>
 
         <div className="scenario-card">
@@ -93,11 +91,7 @@ export default function Profile() {
 
           <p className="scenario-text">
             What if I was Akira? I would use my knowledge of old analog systems
-            that the Phantom hasn't accounted for. While everyone relies on
-            quantum encryption, I'd dig into the city archives and find the
-            original blueprints from 2050. The key to defeating the AI isn't
-            through advanced tech—it's through understanding the foundation it
-            was built upon.
+            that the Phantom hasn't accounted for...
           </p>
 
           <div className="scenario-actions">

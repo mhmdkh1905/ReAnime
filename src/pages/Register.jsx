@@ -3,8 +3,7 @@ import { useState } from "react";
 import logoImg from "../assets/logo.jpg";
 import { GoArrowLeft } from "react-icons/go";
 import { IoPersonSharp } from "react-icons/io5";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 
 export default function Register() {
@@ -12,17 +11,27 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
   const navigate = useNavigate();
 
   const handleCreateAccount = async (e) => {
     e.preventDefault();
+    setErr("");
+    setLoading(true);
 
     try {
       const user = await registerUser(name, email, password);
-      console.log("Registered:", user.uid);
-      navigate("/");
+      console.log("Registered user:", user);
+
+      // ✅ תראה גם שהגענו לכאן
+      navigate("/login", { replace: true });
     } catch (error) {
-      console.log(error.message);
+      console.log("REGISTER ERROR FULL:", error);
+      setErr(error?.code ? `${error.code}: ${error.message}` : (error?.message || "Register failed"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,16 +44,19 @@ export default function Register() {
             Back to sign in
           </div>
         </Link>
+
         <div className="logo">
           <img src={logoImg} alt="kitsuni mask" className="logo-circle" />
         </div>
 
         <h1 className="title">Create Your Account</h1>
+        <p className="subtitle">Sign up to start your journey</p>
+
+        {err ? <div className="form-error">{err}</div> : null}
 
         <form onSubmit={handleCreateAccount}>
-          {/* name */}
           <div className="form-group">
-            <label>You Full Name</label>
+            <label htmlFor="name">Your Full Name</label>
             <div className="input-wrapper">
               <IoPersonSharp className="input-icon" />
               <input
@@ -58,21 +70,9 @@ export default function Register() {
             </div>
           </div>
 
-          {/* email */}
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <div className="input-wrapper">
-              <svg
-                className="input-icon"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-              >
-                <path
-                  fill="currentColor"
-                  d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"
-                />
-              </svg>
               <input
                 type="email"
                 id="email"
@@ -84,21 +84,9 @@ export default function Register() {
             </div>
           </div>
 
-          {/* password */}
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
-              <svg
-                className="input-icon"
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-              >
-                <path
-                  fill="currentColor"
-                  d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"
-                />
-              </svg>
               <input
                 type="password"
                 id="password"
@@ -110,9 +98,8 @@ export default function Register() {
             </div>
           </div>
 
-          {/* create account*/}
-          <button type="submit" className="sign-in-btn">
-            Create Account
+          <button type="submit" className="sign-in-btn" disabled={loading}>
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
       </div>
