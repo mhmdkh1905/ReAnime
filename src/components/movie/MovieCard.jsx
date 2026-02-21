@@ -6,11 +6,12 @@ export default function MovieCard({ title, image, type, trending }) {
       <img src={image} className="movie-image" />
 
       <div className="movie-gradient"></div>
-
-      <div className="trending">
-        <div className="dot"></div>
-        Trending
-      </div>
+{trending && (
+  <div className="trending">
+    <div className="dot"></div>
+    Trending
+  </div>
+)}
 
       <div className="movie-content">
         <h3 className="movie-title">{title}</h3>

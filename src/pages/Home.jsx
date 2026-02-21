@@ -4,15 +4,41 @@ import "../styles/home.css";
 
 import { useAuth } from "../context/AuthContext";
 import { logoutUser, getUserProfile } from "../services/authService";
-
+import MovieCard from "../components/movie/MovieCard";
 export default function Home() {
   const [q, setQ] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [filter, setFilter] = useState("All");
 
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-
+const movies = [
+  {
+    id: 1,
+    title: "Neon Dreams",
+    image:
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=60",
+    type: "Movie",
+    trending: true,
+  },
+  {
+    id: 2,
+    title: "Spirit Chronicles",
+    image:
+      "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=800&q=60",
+    type: "Series",
+    trending: true,
+  },
+  {
+    id: 3,
+    title: "Midnight Tales",
+    image:
+      "https://images.unsplash.com/photo-1497032205916-ac775f0649ae?auto=format&fit=crop&w=800&q=60",
+    type: "Movie",
+    trending: true,
+  },
+];
   useEffect(() => {
     let alive = true;
 
@@ -116,32 +142,79 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="main">
-        <section className="heroCard">
-          <h1 className="heroTitle">
-            Reimagine Your Favorite <br /> Stories
-          </h1>
+<main className="main">
 
-          <p className="heroDesc">
-            Explore anime worlds, watch iconic scenes, and rewrite the narrative
-            as the character or creator
-          </p>
+  <section className="heroSection">
+    <h1 className="heroTitle">
+      Reimagine Your Favorite Stories
+    </h1>
 
-          <div className="heroMedia">
-            <div className="mediaThumb" />
-            <div className="mediaText">
-              <div className="chip">AI Stories</div>
-              <h3>Turn scenes into alternate endings</h3>
-              <p>Pick an anime → choose a moment → rewrite it in your style.</p>
+    <p className="heroSubtitle">
+      Explore anime worlds, watch iconic scenes, and rewrite the narrative
+      as the character or creator.
+    </p>
+  </section>
 
-              <div className="heroActions">
-                <button className="primaryBtn">Get Started</button>
-                <button className="ghostBtn">Browse Popular</button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
+  <section className="cardsSection">
+    <h2 className="sectionTitle">Trending Now</h2>
+
+    <div className="cardsGrid">
+      {movies
+        .filter((movie) => movie.trending)
+        .map((movie) => (
+          <MovieCard
+            key={movie.id}
+            title={movie.title}
+            image={movie.image}
+            type={movie.type}
+            trending={movie.trending}
+          />
+        ))}
+    </div>
+  </section>
+<section className="discoverSection">
+  <div className="discoverHeader">
+    <h2 className="discoverTitle">
+      <span className="discoverIcon">↗</span> Discover
+    </h2>
+
+    <div className="discoverFilters">
+      <button 
+        className={`filterBtn ${filter === "All" ? "active" : ""}`}
+        onClick={() => setFilter("All")}
+      >
+        All
+      </button>
+      <button 
+        className={`filterBtn ${filter === "Movie" ? "active" : ""}`}
+        onClick={() => setFilter("Movie")}
+      >
+        Movies
+      </button>
+      <button 
+        className={`filterBtn ${filter === "Series" ? "active" : ""}`}
+        onClick={() => setFilter("Series")}
+      >
+        Series
+      </button>
+    </div>
+  </div>
+
+  <div className="discoverGrid">
+    {movies
+      .filter((movie) => filter === "All" || movie.type === filter)
+      .map((movie) => (
+        <MovieCard
+          key={movie.id}
+          title={movie.title}
+          image={movie.image}
+          type={movie.type}
+          trending={movie.trending}
+        />
+      ))}
+  </div>
+</section>
+</main>
     </div>
   );
 }
