@@ -14,10 +14,8 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: "movie", element: <Movie /> },
+      { path: "movie/:id", element: <Movie /> },  // 👈 תוסיף את זה
       { path: "profile", element: <Profile /> },
-      // { path: "login", element: <Login /> },
-      // { path: "register", element: <Register /> },
     ],
   },
   {
@@ -37,5 +35,4 @@ const router = createBrowserRouter([
     element: <Test />,
   },
 ]);
-
 export default router;
