@@ -32,7 +32,7 @@ export default function Profile() {
     );
   }
 
-  const avatarSrc = profile.photoURL || "https://i.pravatar.cc/120?img=3";
+  const avatarSrc = profile.photoURL;
 
   return (
     <div className="profile-page">

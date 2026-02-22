@@ -5,6 +5,7 @@ import { X, UserPen, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { logoutUser, getUserProfile } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+
 export default function Navbar() {
   const [searchingText, setSearchingText] = useState("");
   const [isOpen, setIsOpen] = useState(false);
