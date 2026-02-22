@@ -86,3 +86,21 @@
   background-color: yellow;
   border-radius: 50%;
 }
+.movie-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.movie-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: scale(1.03);
+}
+
+.movie-card:active {
+  transform: scale(0.98);
+}

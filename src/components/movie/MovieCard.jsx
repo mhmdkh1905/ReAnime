@@ -1,21 +1,28 @@
+import { Link } from "react-router-dom";
 import "../../styles/MovieCard.css";
 
-export default function MovieCard({ title, image, type, trending }) {
+export default function MovieCard({ id, title, image, type, trending }) {
   return (
-    <div className="movie-card">
-      <img src={image} className="movie-image" />
+    <Link to={`/movie/${id}`} className="movie-card-link">
+      <div className="movie-card">
+        <img src={image} className="movie-image" alt={title} />
 
-      <div className="movie-gradient"></div>
+        <div className="movie-gradient"></div>
 
-      <div className="trending">
-        <div className="dot"></div>
-        Trending
+        {trending && (
+          <div className="trending">
+            <div className="dot"></div>
+            Trending
+          </div>
+        )}
+
+        <div className="movie-content">
+          <h3 className="movie-title">{title}</h3>
+          <span className={`movie-badge ${type.toLowerCase()}`}>
+            {type}
+          </span>
+        </div>
       </div>
-
-      <div className="movie-content">
-        <h3 className="movie-title">{title}</h3>
-        <span className={`movie-badge ${type.toLowerCase()}`}>{type}</span>
-      </div>
-    </div>
+    </Link>
   );
 }
