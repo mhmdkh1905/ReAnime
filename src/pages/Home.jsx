@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import { logoutUser, getUserProfile } from "../services/authService";
 import { getAllMovies } from "../services/movieService";
 import MovieCard from "../components/movie/MovieCard";
+import Footer from "../components/layout/Footer";
+import StoryCallout from "../components/StoryCallout";
 
 export default function Home() {
   const [q, setQ] = useState("");
@@ -79,7 +81,9 @@ export default function Home() {
         <header className="topbar">
           <div className="brand">ReAnime</div>
           <div className="searchWrap">
-            <span className="searchIcon" aria-hidden="true">⌕</span>
+            <span className="searchIcon" aria-hidden="true">
+              ⌕
+            </span>
             <input
               className="searchInput"
               placeholder="Search anime..."
@@ -100,7 +104,9 @@ export default function Home() {
                     alt="avatar"
                   />
                   <span className="homeName">{profile.name || "User"}</span>
-                  <span className="homeCaret" aria-hidden="true">▾</span>
+                  <span className="homeCaret" aria-hidden="true">
+                    ▾
+                  </span>
                 </button>
               </div>
             ) : (
@@ -111,7 +117,9 @@ export default function Home() {
           </div>
         </header>
         <main className="main">
-          <p style={{ textAlign: "center", marginTop: "40px" }}>Loading movies...</p>
+          <p style={{ textAlign: "center", marginTop: "40px" }}>
+            Loading movies...
+          </p>
         </main>
       </div>
     );
@@ -123,7 +131,9 @@ export default function Home() {
         <div className="brand">ReAnime</div>
 
         <div className="searchWrap">
-          <span className="searchIcon" aria-hidden="true">⌕</span>
+          <span className="searchIcon" aria-hidden="true">
+            ⌕
+          </span>
           <input
             className="searchInput"
             placeholder="Search anime..."
@@ -146,7 +156,9 @@ export default function Home() {
                   alt="avatar"
                 />
                 <span className="homeName">{profile.name || "User"}</span>
-                <span className="homeCaret" aria-hidden="true">▾</span>
+                <span className="homeCaret" aria-hidden="true">
+                  ▾
+                </span>
               </button>
 
               {isOpen && (
@@ -183,11 +195,8 @@ export default function Home() {
       </header>
 
       <main className="main">
-
         <section className="heroSection">
-          <h1 className="heroTitle">
-            Reimagine Your Favorite Stories
-          </h1>
+          <h1 className="heroTitle">Reimagine Your Favorite Stories</h1>
 
           <p className="heroSubtitle">
             Explore anime worlds, watch iconic scenes, and rewrite the narrative
@@ -200,7 +209,9 @@ export default function Home() {
 
           <div className="cardsGrid">
             {movies.length === 0 ? (
-              <p style={{ gridColumn: "1 / -1", textAlign: "center" }}>No movies available</p>
+              <p style={{ gridColumn: "1 / -1", textAlign: "center" }}>
+                No movies available
+              </p>
             ) : (
               movies
                 .filter((movie) => movie.trending !== false)
@@ -226,19 +237,19 @@ export default function Home() {
             </h2>
 
             <div className="discoverFilters">
-              <button 
+              <button
                 className={`filterBtn ${filter === "All" ? "active" : ""}`}
                 onClick={() => setFilter("All")}
               >
                 All
               </button>
-              <button 
+              <button
                 className={`filterBtn ${filter === "Movie" ? "active" : ""}`}
                 onClick={() => setFilter("Movie")}
               >
                 Movies
               </button>
-              <button 
+              <button
                 className={`filterBtn ${filter === "Series" ? "active" : ""}`}
                 onClick={() => setFilter("Series")}
               >
@@ -250,8 +261,11 @@ export default function Home() {
           <div className="discoverGrid">
             {movies
               .filter((movie) => {
-                const matchesFilter = filter === "All" || movie.genre === filter;
-                const matchesSearch = q === "" || movie.title.toLowerCase().includes(q.toLowerCase());
+                const matchesFilter =
+                  filter === "All" || movie.movieOrSeries === filter;
+                const matchesSearch =
+                  q === "" ||
+                  movie.title.toLowerCase().includes(q.toLowerCase());
                 return matchesFilter && matchesSearch;
               })
               .map((movie) => (
@@ -267,6 +281,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <StoryCallout />
+      <Footer />
     </div>
   );
 }

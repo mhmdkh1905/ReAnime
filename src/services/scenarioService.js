@@ -9,9 +9,12 @@ import {
   query,
   where,
   serverTimestamp, // <- fixed import
+  increment,
+  getDoc,
 } from "firebase/firestore";
 
 const scenarioCollection = collection(db, "scenarios");
+const scenarioReactionsCollection = collection(db, "scenarioReactions");
 
 /* ==============================
    CREATE SCENARIO
@@ -110,4 +113,120 @@ export const updateScenario = async (id, updatedData) => {
 export const deleteScenario = async (id) => {
   const docRef = doc(db, "scenarios", id);
   return await deleteDoc(docRef);
+};
+
+/* ==============================
+   READ SCENARIOS BY USER ID
+============================== */
+export const getScenariosByUserId = async (userId) => {
+  const q = query(scenarioCollection, where("createdBy", "==", userId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
+
+/* ==============================
+  CREATE SCENARIO REACTION
+============================== */
+export const createScenarioReaction = async ({
+  scenarioId,
+  userId,
+  type, // "like" or "dislike"
+}) => {
+  try {
+    if (!scenarioId || !userId || !type) {
+      throw new Error("Missing required fields");
+    }
+
+    const snapshot = await getDocs(
+      query(
+        scenarioReactionsCollection,
+        where("scenarioId", "==", scenarioId),
+        where("userId", "==", userId),
+      ),
+    );
+
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+
+    if (!snapshot.empty) {
+      const existingDoc = snapshot.docs[0];
+      const existingData = existingDoc.data();
+
+      if (existingData.type === type) {
+        // Remove reaction (toggle off)
+        await deleteDoc(doc(db, "scenarioReactions", existingDoc.id));
+
+        // Decrement the appropriate counter
+        if (type === "like") {
+          await updateDoc(scenarioRef, { likesCount: increment(-1) });
+        } else {
+          await updateDoc(scenarioRef, { dislikesCount: increment(-1) });
+        }
+
+        return { success: true, id: existingDoc.id, removed: true };
+      } else {
+        // Change reaction type (e.g., from dislike to like)
+        await updateDoc(doc(db, "scenarioReactions", existingDoc.id), {
+          type,
+          createdAt: serverTimestamp(),
+        });
+
+        // Decrement old type, increment new type
+        if (type === "like") {
+          await updateDoc(scenarioRef, {
+            likesCount: increment(1),
+            dislikesCount: increment(-1),
+          });
+        } else {
+          await updateDoc(scenarioRef, {
+            likesCount: increment(-1),
+            dislikesCount: increment(1),
+          });
+        }
+
+        return { success: true, id: existingDoc.id, updated: true };
+      }
+    }
+
+    // First time reaction - add new
+    const reactionData = {
+      scenarioId,
+      userId,
+      type,
+      createdAt: serverTimestamp(),
+    };
+    const docRef = await addDoc(scenarioReactionsCollection, reactionData);
+
+    // Increment the appropriate counter
+    if (type === "like") {
+      await updateDoc(scenarioRef, { likesCount: increment(1) });
+    } else {
+      await updateDoc(scenarioRef, { dislikesCount: increment(1) });
+    }
+
+    return {
+      success: true,
+      id: docRef.id,
+    };
+  } catch (error) {
+    console.error("Error creating scenario reaction:", error);
+    return {
+      success: false,
+      error: error.message,
+    };
+  }
+};
+
+/* ==============================
+  GET SCENARIO REACTIONS BY USER ID
+============================== */
+export const getScenarioReactionsByUserId = async (userId) => {
+  const q = query(scenarioReactionsCollection, where("userId", "==", userId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 };

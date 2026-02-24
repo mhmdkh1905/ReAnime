@@ -17,7 +17,7 @@ import {
 import { db } from "../firebase/firebaseConfig";
 
 const commentsCollection = collection(db, "comments");
-const commentLikesCollection = collection(db, "commentLikes");
+const commentReactionCollection = collection(db, "commentReaction");
 
 /* =======================================================
    CREATE COMMENT
@@ -169,3 +169,17 @@ export const unlikeComment = async (commentId, userId) => {
     });
   }
 };
+
+/* =======================================================
+   GET COMMENTS BY USER ID
+======================================================= */
+export const getCommentsByUserId = async (userId) => {
+  const q = query(commentsCollection, where("createdBy", "==", userId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
+
+

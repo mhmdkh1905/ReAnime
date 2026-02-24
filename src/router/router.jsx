@@ -7,14 +7,13 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ForgetPassword from "../pages/ForgetPassword";
 import Profile from "../pages/Profile";
-import Test from "../test";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: "movie/:id", element: <Movie /> },  // 👈 תוסיף את זה
+      { path: "movie/:id", element: <Movie /> }, // 👈 תוסיף את זה
       { path: "profile", element: <Profile /> },
     ],
   },
@@ -29,10 +28,6 @@ const router = createBrowserRouter([
   {
     path: "/forget-password",
     element: <ForgetPassword />,
-  },
-  {
-    path: "/test",
-    element: <Test />,
   },
 ]);
 export default router;

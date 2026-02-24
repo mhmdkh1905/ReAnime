@@ -28,10 +28,11 @@
 
 .movieHero {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 18px;
   margin-bottom: 18px;
+  margin-top: 2rem;
 }
 
 .movieTitle {
@@ -60,7 +61,8 @@
   margin-top: 18px;
   border-radius: 18px;
   border: 1px solid rgba(160, 80, 230, 0.35);
-  background: radial-gradient(
+  background:
+    radial-gradient(
       1200px 500px at 10% 0%,
       rgba(150, 60, 220, 0.18),
       transparent 55%
@@ -86,7 +88,11 @@
 .promptBtn {
   width: 100%;
   border: 1px solid rgba(255, 90, 200, 0.25);
-  background: linear-gradient(90deg, rgba(120, 30, 170, 0.35), rgba(180, 40, 120, 0.25));
+  background: linear-gradient(
+    90deg,
+    rgba(120, 30, 170, 0.35),
+    rgba(180, 40, 120, 0.25)
+  );
   color: #fff;
   border-radius: 14px;
   padding: 16px 16px;
@@ -108,7 +114,7 @@
 
 .panelHint {
   margin: 0 0 10px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .modeRow {
@@ -130,13 +136,17 @@
 }
 
 .modeBtn.active {
-  background: linear-gradient(90deg, rgba(140, 50, 255, 0.85), rgba(255, 80, 200, 0.55));
+  background: linear-gradient(
+    90deg,
+    rgba(140, 50, 255, 0.85),
+    rgba(255, 80, 200, 0.55)
+  );
   border-color: rgba(220, 120, 255, 0.55);
 }
 
 .modeDesc {
   margin: 6px 0 14px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.55;
 }
 
@@ -144,7 +154,7 @@
   border-radius: 16px;
   border: 1px solid rgba(160, 80, 230, 0.25);
   overflow: hidden;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .scenarioInput {
@@ -169,7 +179,7 @@
 }
 
 .charCount {
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-weight: 700;
 }
 
@@ -180,7 +190,11 @@
   cursor: pointer;
   font-weight: 900;
   color: #fff;
-  background: linear-gradient(90deg, rgba(120, 30, 170, 0.9), rgba(170, 60, 255, 0.75));
+  background: linear-gradient(
+    90deg,
+    rgba(120, 30, 170, 0.9),
+    rgba(170, 60, 255, 0.75)
+  );
 }
 
 .postBtn:hover {
@@ -202,7 +216,7 @@
 }
 
 .sortLabel {
-  color: rgba(255,255,255,0.65);
+  color: rgba(255, 255, 255, 0.65);
   font-weight: 700;
 }
 
@@ -219,7 +233,7 @@
 .emptyState {
   border-radius: 16px;
   border: 1px solid rgba(160, 80, 230, 0.25);
-  background: rgba(0,0,0,0.28);
+  background: rgba(0, 0, 0, 0.28);
   padding: 26px;
   display: grid;
   place-items: center;
@@ -235,7 +249,7 @@
 
 .emptyText {
   margin: 0;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
 }
 
@@ -244,7 +258,7 @@
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(160, 80, 230, 0.25);
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .videoFrame {
@@ -343,4 +357,12 @@
   color: #e0d5ff;
   margin: 0;
   word-break: break-word;
+}
+
+.unCheckedIcon {
+  fill: #ccbec2;
+}
+
+.checkedIcon {
+  fill: #ff6b9d;
 }

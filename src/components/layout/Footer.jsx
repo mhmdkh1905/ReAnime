@@ -1,7 +1,10 @@
-import React from 'react'
+import "../../styles/footer.css";
 
 export default function Footer() {
+  const year = 2026;
   return (
-    <div>Footer</div>
-  )
+    <footer className="footer">
+      <p>© {year} ReAnime. All rights reserved.</p>
+    </footer>
+  );
 }
