@@ -21,6 +21,7 @@ import {
   createScenarioReaction,
   getScenarioReactionsByUserId,
 } from "../services/scenarioService";
+import CommentSection from "../components/movie/CommentSection";
 
 export default function Movie() {
   const { id } = useParams();
@@ -398,6 +399,7 @@ export default function Movie() {
                     <FaRegComment className="unCheckedIcon" />
                     <span>{scenario.commentsCount}</span>
                   </div>
+                  <CommentSection scenarioId={scenario.id} movieId={id} />
                 </div>
               ))}
             </div>
