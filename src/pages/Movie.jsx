@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import "../styles/movie1.css";
+import "../styles/movie.css";
 import "../styles/user-profile.css";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../services/authService";
