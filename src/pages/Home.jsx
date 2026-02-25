@@ -8,9 +8,12 @@ import { getAllMovies } from "../services/movieService";
 import MovieCard from "../components/movie/MovieCard";
 import Footer from "../components/layout/Footer";
 import StoryCallout from "../components/StoryCallout";
+import PostMovieModal from "../components/movie/PostMovieModal";
+import { createMovie } from "../services/movieService";
 
 export default function Home() {
   const [q, setQ] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState("All");
@@ -36,6 +39,12 @@ export default function Home() {
 
     fetchMovies();
   }, []);
+
+  // debounce the query so filtering isn't too eager while typing
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(q.trim()), 240);
+    return () => clearTimeout(t);
+  }, [q]);
 
   useEffect(() => {
     let alive = true;
@@ -75,6 +84,22 @@ export default function Home() {
     navigate("/login", { replace: true });
   };
 
+  const [showPostModal, setShowPostModal] = useState(false);
+
+  const handleCreatedMovie = async (id) => {
+    // refresh movies list after creation
+    try {
+      setLoading(true);
+      const data = await getAllMovies();
+      setMovies(data);
+      alert("Movie created successfully");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="page">
@@ -89,6 +114,14 @@ export default function Home() {
               placeholder="Search anime..."
               disabled
             />
+            <button
+              className="searchBtn"
+              type="button"
+              disabled
+              aria-label="Search"
+            >
+              Search
+            </button>
           </div>
           <div className="homeRight">
             {profile ? (
@@ -139,7 +172,18 @@ export default function Home() {
             placeholder="Search anime..."
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") setDebouncedQ(q.trim());
+            }}
           />
+          <button
+            className="searchBtn"
+            type="button"
+            onClick={() => setDebouncedQ(q.trim())}
+            aria-label="Search"
+          >
+            Search
+          </button>
         </div>
 
         <div className="homeRight">
@@ -202,6 +246,15 @@ export default function Home() {
             Explore anime worlds, watch iconic scenes, and rewrite the narrative
             as the character or creator.
           </p>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
+            <button
+              className="primaryBtn"
+              type="button"
+              onClick={() => setShowPostModal(true)}
+            >
+              + Post Movie
+            </button>
+          </div>
         </section>
 
         <section className="cardsSection">
@@ -263,9 +316,17 @@ export default function Home() {
               .filter((movie) => {
                 const matchesFilter =
                   filter === "All" || movie.movieOrSeries === filter;
+
+                const search = debouncedQ.toLowerCase();
                 const matchesSearch =
-                  q === "" ||
-                  movie.title.toLowerCase().includes(q.toLowerCase());
+                  search === "" ||
+                  (movie.title && movie.title.toLowerCase().includes(search)) ||
+                  (movie.description &&
+                    movie.description.toLowerCase().includes(search)) ||
+                  (movie.genre && movie.genre.toLowerCase().includes(search)) ||
+                  (movie.createdByName &&
+                    movie.createdByName.toLowerCase().includes(search));
+
                 return matchesFilter && matchesSearch;
               })
               .map((movie) => (
@@ -283,6 +344,11 @@ export default function Home() {
       </main>
       <StoryCallout />
       <Footer />
+      <PostMovieModal
+        isOpen={showPostModal}
+        onClose={() => setShowPostModal(false)}
+        onCreated={handleCreatedMovie}
+      />
     </div>
   );
 }

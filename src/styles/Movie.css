@@ -366,3 +366,50 @@
 .checkedIcon {
   fill: #ff6b9d;
 }
+
+/* Comments */
+.commentsPanel {
+  margin-top: 12px;
+  border-top: 1px solid rgba(160, 80, 230, 0.06);
+  padding-top: 12px;
+}
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.commentItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.commentAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.commentBody {
+  flex: 1;
+}
+.commentMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+}
+.commentTime {
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+}
+.commentContent {
+  color: rgba(255,255,255,0.85);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.noComments {
+  color: rgba(255,255,255,0.6);
+  font-style: italic;
+}
