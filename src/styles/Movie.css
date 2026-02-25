@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #05020a;
   color: #fff;
-  padding: 26px 0 60px;
+  padding: 25px 0 60px;
 }
 
 .movieContainer {
@@ -397,19 +397,19 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 13px;
 }
 .commentTime {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 12px;
 }
 .commentContent {
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   margin-top: 6px;
   line-height: 1.5;
 }
 .noComments {
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
