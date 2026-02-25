@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "../../styles/MovieCard.css";
+import "../../styles/movieCard.css";
 
 export default function MovieCard({ id, title, image, type, trending }) {
   return (
@@ -18,9 +18,7 @@ export default function MovieCard({ id, title, image, type, trending }) {
 
         <div className="movie-content">
           <h3 className="movie-title">{title}</h3>
-          <span className={`movie-badge ${type.toLowerCase()}`}>
-            {type}
-          </span>
+          <span className={`movie-badge ${type.toLowerCase()}`}>{type}</span>
         </div>
       </div>
     </Link>
