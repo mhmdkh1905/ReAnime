@@ -66,6 +66,14 @@ export const createComment = async ({
   }
 };
 
+export const getAllComments = async () => {
+  const snapshot = await getDocs(commentsCollection);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+};
+
 /* =======================================================
    GET COMMENTS BY SCENARIO (One Time Fetch)
 ======================================================= */
@@ -181,5 +189,3 @@ export const getCommentsByUserId = async (userId) => {
     ...doc.data(),
   }));
 };
-
-

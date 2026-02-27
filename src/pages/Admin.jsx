@@ -5,11 +5,17 @@ import {
   getAllMovies,
   deleteMovie,
   createMovie,
+  getMovieById,
 } from "../services/movieService";
-import { getAllScenarios, deleteScenario } from "../services/scenarioService";
+import {
+  getAllScenarios,
+  deleteScenario,
+  getScenarioById,
+} from "../services/scenarioService";
 import {
   getCommentsByScenario,
   deleteComment,
+  getAllComments,
 } from "../services/commentService";
 import { getAllUsers, updateUser, deleteUser } from "../services/usersService";
 import "./Admin.css";
@@ -55,27 +61,14 @@ export default function Admin() {
       const scenariosData = await getAllScenarios();
       setScenarios(scenariosData || []);
 
-      let allComments = [];
-      if (scenariosData && scenariosData.length > 0) {
-        for (const scenario of scenariosData) {
-          const scenarioComments = await getCommentsByScenario(scenario.id);
-          allComments = [
-            ...allComments,
-            ...scenarioComments.map((c) => ({
-              ...c,
-              scenarioId: scenario.id,
-              scenarioTitle: scenario.title,
-            })),
-          ];
-        }
-      }
-      setComments(allComments || []);
+      const commentsData = await getAllComments();
+      setComments(commentsData || []);
 
       setStats({
         users: usersData?.length || 0,
         movies: moviesData?.length || 0,
         scenarios: scenariosData?.length || 0,
-        comments: allComments.length || 0,
+        comments: commentsData?.length || 0,
       });
     } catch (error) {
       console.error("Error loading data:", error);
@@ -172,7 +165,12 @@ export default function Admin() {
     <div className="admin-page">
       <div className="admin-container">
         <div className="admin-header">
-          <h1>Admin Dashboard</h1>
+          <div className="header-left">
+            <button className="back-home-btn" onClick={() => navigate("/")}>
+              ← Back to Home
+            </button>
+            <h1>Admin Dashboard</h1>
+          </div>
           <button
             className="create-movie-btn"
             onClick={() => setShowCreateModal(true)}
@@ -354,8 +352,8 @@ export default function Admin() {
                           {scenario.content?.substring(0, 100)}...
                         </p>
                         <p className="item-stats">
-                          ❤️ {scenario.likesCount} • 💬 {scenario.commentsCount}{" "}
-                          • 👁 {scenario.viewsCount}
+                          ❤️ {scenario.likesCount} • 💬{" "}
+                          {scenario.commentsCount}{" "}
                         </p>
                       </div>
                       <div className="item-actions">
@@ -379,25 +377,41 @@ export default function Admin() {
                 <div className="empty-state">No comments found</div>
               ) : (
                 <div className="items-list">
-                  {comments.map((comment) => (
-                    <div key={comment.id} className="admin-item">
-                      <div className="item-details">
-                        <h3>Comment by {comment.createdByName}</h3>
-                        <p className="item-meta">On: {comment.scenarioTitle}</p>
-                        <p className="item-desc">{comment.content}</p>
+                  {comments.map((comment) => {
+                    // Find the movie and scenario from already loaded data
+                    const movie = movies.find((m) => m.id === comment.movieId);
+                    const scenario = scenarios.find(
+                      (s) => s.id === comment.scenarioId,
+                    );
+
+                    return (
+                      <div key={comment.id} className="admin-item">
+                        <div className="item-details">
+                          <h3>Comment by {comment.createdByName}</h3>
+                          <p className="item-meta">
+                            Movie: {movie?.title || "Unknown Movie"}
+                          </p>
+                          <p className="item-meta">
+                            Scenario: {scenario?.title || "Unknown Scenario"}
+                          </p>
+                          <p className="item-desc">{comment.content}</p>
+                        </div>
+                        <div className="item-actions">
+                          <button
+                            className="delete-btn"
+                            onClick={() =>
+                              handleDeleteComment(
+                                comment.id,
+                                comment.scenarioId,
+                              )
+                            }
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
-                      <div className="item-actions">
-                        <button
-                          className="delete-btn"
-                          onClick={() =>
-                            handleDeleteComment(comment.id, comment.scenarioId)
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

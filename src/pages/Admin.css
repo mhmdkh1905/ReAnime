@@ -45,6 +45,29 @@
   margin-bottom: 24px;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-home-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  background: rgba(168, 85, 247, 0.1);
+  color: rgba(168, 85, 247, 0.95);
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.back-home-btn:hover {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.55);
+}
+
 .admin-header h1 {
   margin: 0;
   font-size: 28px;
@@ -451,6 +474,16 @@
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
+  }
+
+  .header-left {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .back-home-btn {
+    width: 100%;
+    text-align: center;
   }
 
   .admin-header h1 {
