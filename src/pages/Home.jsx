@@ -246,15 +246,6 @@ export default function Home() {
             Explore anime worlds, watch iconic scenes, and rewrite the narrative
             as the character or creator.
           </p>
-          <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
-            <button
-              className="primaryBtn"
-              type="button"
-              onClick={() => setShowPostModal(true)}
-            >
-              + Post Movie
-            </button>
-          </div>
         </section>
 
         <section className="cardsSection">

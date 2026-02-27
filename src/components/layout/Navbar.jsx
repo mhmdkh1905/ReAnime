@@ -76,6 +76,19 @@ export default function Navbar() {
         {isOpen && (
           <div className="drop-down-menu">
             <ul className="list">
+              {profile?.role === "admin" && (
+                <Link to="/admin" className="link">
+                  <li
+                    className="element"
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    <UserPen className="icon" />
+                    <p className="label">Admin Dashboard</p>
+                  </li>
+                </Link>
+              )}
               <Link to="/profile" className="link">
                 <li
                   className="element"

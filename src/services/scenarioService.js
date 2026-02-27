@@ -230,3 +230,13 @@ export const getScenarioReactionsByUserId = async (userId) => {
     ...doc.data(),
   }));
 };
+
+export const getScenarioById = async (id) => {
+  const docRef = doc(db, "scenarios", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  } else {
+    throw new Error("Scenario not found");
+  }
+};
