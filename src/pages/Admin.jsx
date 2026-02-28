@@ -353,6 +353,18 @@ export default function Admin() {
                         <p className="item-desc">
                           {movie.description?.substring(0, 100)}...
                         </p>
+                        {movie.trailerURL && (
+                          <p className="item-meta">
+                            🎬 Trailer:{" "}
+                            <a
+                              href={movie.trailerURL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Trailer
+                            </a>
+                          </p>
+                        )}
                       </div>
                       <div className="item-actions">
                         <button
@@ -413,7 +425,6 @@ export default function Admin() {
               ) : (
                 <div className="items-list">
                   {comments.map((comment) => {
-                    // Find the movie and scenario from already loaded data
                     const movie = movies.find((m) => m.id === comment.movieId);
                     const scenario = scenarios.find(
                       (s) => s.id === comment.scenarioId,
@@ -425,9 +436,6 @@ export default function Admin() {
                           <h3>Comment by {comment.createdByName}</h3>
                           <p className="item-meta">
                             Movie: {movie?.title || "Unknown Movie"}
-                          </p>
-                          <p className="item-meta">
-                            Scenario: {scenario?.title || "Unknown Scenario"}
                           </p>
                           <p className="item-desc">{comment.content}</p>
                         </div>
@@ -492,6 +500,7 @@ function CreateMovieModal({ onClose, onCreated }) {
   const [rating, setRating] = useState(5);
   const [genre, setGenre] = useState("");
   const [image, setImage] = useState("");
+  const [trailerURL, setTrailerURL] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -516,6 +525,7 @@ function CreateMovieModal({ onClose, onCreated }) {
         rating,
         genre: genre.trim(),
         image: image.trim() || "",
+        trailerURL: trailerURL.trim() || "",
         createdBy: user?.uid || null,
         createdByName: user?.displayName || user?.email || "Admin",
       });
@@ -527,6 +537,7 @@ function CreateMovieModal({ onClose, onCreated }) {
       setRating(5);
       setGenre("");
       setImage("");
+      setTrailerURL("");
 
       onCreated && onCreated(id);
     } catch (err) {
@@ -604,6 +615,16 @@ function CreateMovieModal({ onClose, onCreated }) {
             value={image}
             onChange={(e) => setImage(e.target.value)}
             placeholder="https://..."
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Trailer URL (optional)</label>
+          <input
+            type="text"
+            value={trailerURL}
+            onChange={(e) => setTrailerURL(e.target.value)}
+            placeholder="https://youtube.com/watch?v=..."
           />
         </div>
 

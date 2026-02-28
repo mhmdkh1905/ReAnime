@@ -5,66 +5,19 @@ import {
   updateDoc,
   deleteDoc,
   getDocs,
+  getDoc,
   query,
   where,
   orderBy,
   serverTimestamp,
   increment,
   onSnapshot,
-  getDoc,
   setDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
 const commentsCollection = collection(db, "comments");
-const commentReactionCollection = collection(db, "commentReaction");
-
-/* =======================================================
-   CREATE COMMENT
-======================================================= */
-export const createComment = async ({
-  scenarioId,
-  movieId,
-  content,
-  user,
-  parentCommentId = null,
-}) => {
-  try {
-    if (!scenarioId || !content || !user?.uid) {
-      throw new Error("Missing required fields");
-    }
-
-    const commentData = {
-      scenarioId,
-      movieId,
-      content,
-
-      createdBy: user.uid,
-      createdByName: user.name || "Anonymous",
-      userPhotoURL: user.photoURL || "",
-
-      parentCommentId, // null = normal comment | id = reply
-
-      likesCount: 0,
-      isEdited: false,
-
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    };
-
-    const docRef = await addDoc(commentsCollection, commentData);
-
-    // increment comments count in scenario
-    const scenarioRef = doc(db, "scenarios", scenarioId);
-    await updateDoc(scenarioRef, {
-      commentsCount: increment(1),
-    });
-
-    return { success: true, id: docRef.id };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-};
+const commentLikesCollection = collection(db, "commentLikes");
 
 export const getAllComments = async () => {
   const snapshot = await getDocs(commentsCollection);
@@ -75,16 +28,51 @@ export const getAllComments = async () => {
 };
 
 /* =======================================================
-   GET COMMENTS BY SCENARIO (One Time Fetch)
+   CREATE COMMENT
+======================================================= */
+export const createComment = async ({
+  scenarioId,
+  movieId = null,
+  content,
+  user,
+  parentCommentId = null,
+}) => {
+  try {
+    const commentData = {
+      scenarioId,
+      movieId,
+      content,
+
+      createdBy: user.uid,
+      createdByName: user.name || "Anonymous",
+      userPhotoURL: user.photoURL || "",
+
+      parentCommentId,
+
+      likesCount: 0,
+      isEdited: false,
+
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(commentsCollection, commentData);
+
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("Create comment error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+/* =======================================================
+   GET COMMENTS BY SCENARIO (ONE TIME)
 ======================================================= */
 export const getCommentsByScenario = async (scenarioId) => {
-  const q = query(
-    commentsCollection,
-    where("scenarioId", "==", scenarioId),
-    orderBy("createdAt", "asc"),
-  );
+  const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
 
   const snapshot = await getDocs(q);
+
   return snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
@@ -92,71 +80,83 @@ export const getCommentsByScenario = async (scenarioId) => {
 };
 
 /* =======================================================
-   REAL-TIME COMMENTS LISTENER
+   REAL-TIME COMMENTS
 ======================================================= */
 export const subscribeToComments = (scenarioId, callback) => {
-  const q = query(
-    commentsCollection,
-    where("scenarioId", "==", scenarioId),
-    orderBy("createdAt", "asc"),
-  );
+  const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
 
-  return onSnapshot(q, (snapshot) => {
-    const comments = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(comments);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const comments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(comments);
+    },
+    (error) => {
+      console.error("Comments listener error:", error);
+    },
+  );
 };
 
 /* =======================================================
    UPDATE COMMENT
 ======================================================= */
 export const updateComment = async (commentId, newContent) => {
-  const commentRef = doc(db, "comments", commentId);
+  try {
+    const commentRef = doc(db, "comments", commentId);
 
-  await updateDoc(commentRef, {
-    content: newContent,
-    isEdited: true,
-    updatedAt: serverTimestamp(),
-  });
+    await updateDoc(commentRef, {
+      content: newContent,
+      isEdited: true,
+      updatedAt: serverTimestamp(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Update comment error:", error);
+    return { success: false, error: error.message };
+  }
 };
 
 /* =======================================================
    DELETE COMMENT
 ======================================================= */
-export const deleteComment = async (commentId, scenarioId) => {
-  const commentRef = doc(db, "comments", commentId);
+export const deleteComment = async (commentId) => {
+  try {
+    const commentRef = doc(db, "comments", commentId);
+    await deleteDoc(commentRef);
 
-  await deleteDoc(commentRef);
-
-  // decrement scenario comments count
-  const scenarioRef = doc(db, "scenarios", scenarioId);
-  await updateDoc(scenarioRef, {
-    commentsCount: increment(-1),
-  });
+    return { success: true };
+  } catch (error) {
+    console.error("Delete comment error:", error);
+    return { success: false, error: error.message };
+  }
 };
 
 /* =======================================================
    LIKE COMMENT
 ======================================================= */
 export const likeComment = async (commentId, userId) => {
-  const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
+  try {
+    const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
+    const commentRef = doc(db, "comments", commentId);
 
-  const existingLike = await getDoc(likeRef);
-
-  if (!existingLike.exists()) {
     await setDoc(likeRef, {
       commentId,
       userId,
       createdAt: serverTimestamp(),
     });
 
-    const commentRef = doc(db, "comments", commentId);
     await updateDoc(commentRef, {
       likesCount: increment(1),
     });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Like error:", error);
+    return { success: false, error: error.message };
   }
 };
 
@@ -164,28 +164,28 @@ export const likeComment = async (commentId, userId) => {
    UNLIKE COMMENT
 ======================================================= */
 export const unlikeComment = async (commentId, userId) => {
-  const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
+  try {
+    const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
+    const commentRef = doc(db, "comments", commentId);
 
-  const existingLike = await getDoc(likeRef);
-
-  if (existingLike.exists()) {
     await deleteDoc(likeRef);
 
-    const commentRef = doc(db, "comments", commentId);
     await updateDoc(commentRef, {
       likesCount: increment(-1),
     });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Unlike error:", error);
+    return { success: false, error: error.message };
   }
 };
 
 /* =======================================================
-   GET COMMENTS BY USER ID
+   CHECK IF USER LIKED COMMENT
 ======================================================= */
-export const getCommentsByUserId = async (userId) => {
-  const q = query(commentsCollection, where("createdBy", "==", userId));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+export const hasUserLikedComment = async (commentId, userId) => {
+  const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
+  const likeSnap = await getDoc(likeRef);
+  return likeSnap.exists();
 };

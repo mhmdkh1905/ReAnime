@@ -172,6 +172,23 @@ export default function Movie() {
     }
   };
 
+  const getEmbedUrl = (url) => {
+    if (!url) return "";
+
+    // Convert watch?v= to embed/
+    if (url.includes("watch?v=")) {
+      return url.replace("watch?v=", "embed/");
+    }
+
+    // Convert youtu.be short links
+    if (url.includes("youtu.be/")) {
+      const videoId = url.split("youtu.be/")[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    return url;
+  };
+
   if (loading) {
     return (
       <div className="moviePage">
@@ -223,10 +240,10 @@ export default function Movie() {
 
         {/* VIDEO */}
         <section className="videoWrap">
-          {movie.youtubeId ? (
+          {movie.trailerURL ? (
             <iframe
               className="videoFrame"
-              src={`https://www.youtube.com/embed/${movie.youtubeId}`}
+              src={getEmbedUrl(movie.trailerURL)}
               title="Video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen

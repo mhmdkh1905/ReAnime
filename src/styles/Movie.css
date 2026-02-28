@@ -372,12 +372,16 @@
   margin-top: 12px;
   border-top: 1px solid rgba(160, 80, 230, 0.06);
   padding-top: 12px;
+  clear: both;
+  width: 100%;
 }
 .commentsList {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 8px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .commentItem {
   display: flex;
@@ -412,4 +416,52 @@
 .noComments {
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
+}
+
+.commentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(160, 80, 230, 0.15);
+}
+
+.commentForm .scenarioInput {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(160, 80, 230, 0.25);
+  border-radius: 8px;
+  outline: none;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.commentForm .scenarioInput:focus {
+  border-color: rgba(160, 80, 230, 0.5);
+}
+
+.commentForm .inputBar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  border: none;
+}
+
+.commentForm .postBtn {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.deleteBtn {
+  border: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 50, 120, 0.75);
 }

@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
-  createComment,
   subscribeToComments,
-  getCommentsByScenario,
+  createComment,
+  deleteComment,
 } from "../../services/commentService";
+
+import {
+  increaseScenarioComentCount,
+  decreaseScenarioComentCount,
+} from "../../services/scenarioReactionService";
 
 export default function CommentSection({ scenarioId, movieId }) {
   const { currentUser } = useAuth();
@@ -15,50 +20,45 @@ export default function CommentSection({ scenarioId, movieId }) {
   useEffect(() => {
     if (!scenarioId) return;
 
-    // try real-time subscription, fallback to one-time fetch
+    // ✅ ONLY real-time subscription (remove getCommentsByScenario)
     const unsub = subscribeToComments(scenarioId, (data) => {
       setComments(data);
     });
 
-    // ensure initial load if subscription doesn't fire immediately
-    getCommentsByScenario(scenarioId).then(setComments).catch(() => {});
-
-    return () => unsub && unsub();
-  }, [scenarioId]);
+    return () => unsub();
+  }, [scenarioId, comments.length]); // Add comments.length to re-subscribe when comments change
 
   const handlePost = async () => {
     if (!text.trim()) return;
+
     if (!currentUser) {
       alert("Please login to post a comment");
       return;
     }
 
     setPosting(true);
-    try {
-      const user = {
-        uid: currentUser.uid,
-        name: currentUser.displayName || currentUser.email || "Anonymous",
-        photoURL: currentUser.photoURL || "",
-      };
 
-      const res = await createComment({
-        scenarioId,
-        movieId: movieId || null,
-        content: text.trim(),
-        user,
-      });
+    const user = {
+      uid: currentUser.uid,
+      name: currentUser.displayName || currentUser.email || "Anonymous",
+      photoURL: currentUser.photoURL || "",
+    };
 
-      if (res.success) {
-        setText("");
-      } else {
-        alert("Error posting comment: " + (res.error || ""));
-      }
-    } catch (err) {
-      console.error(err);
+    const res = await createComment({
+      scenarioId,
+      movieId: movieId || null,
+      content: text.trim(),
+      user,
+    });
+
+    if (res.success) {
+      setText("");
+    } else {
       alert("Error posting comment");
-    } finally {
-      setPosting(false);
     }
+
+    increaseScenarioComentCount(scenarioId); // Increment comment count in scenario document
+    setPosting(false);
   };
 
   return (
@@ -74,15 +74,29 @@ export default function CommentSection({ scenarioId, movieId }) {
                 alt={c.createdByName}
                 className="commentAvatar"
               />
+
               <div className="commentBody">
                 <div className="commentMeta">
                   <strong>{c.createdByName}</strong>
                   <span className="commentTime">
-                    {c.createdAt?.toDate ? c.createdAt.toDate().toLocaleString() : ""}
+                    {c.createdAt
+                      ? new Date(c.createdAt.seconds * 1000).toLocaleString()
+                      : ""}
                   </span>
                 </div>
+
                 <div className="commentContent">{c.content}</div>
               </div>
+              <button
+                className="deleteBtn"
+                onClick={() => {
+                  deleteComment(c.id);
+                  decreaseScenarioComentCount(scenarioId);
+                }}
+                disabled={!currentUser || currentUser.uid !== c.createdBy}
+              >
+                Delete
+              </button>
             </div>
           ))
         )}
@@ -96,6 +110,7 @@ export default function CommentSection({ scenarioId, movieId }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+
         <div className="inputBar">
           <button
             className="postBtn"

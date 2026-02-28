@@ -10,6 +10,7 @@ import Footer from "../components/layout/Footer";
 import StoryCallout from "../components/StoryCallout";
 import PostMovieModal from "../components/movie/PostMovieModal";
 import { createMovie } from "../services/movieService";
+import logoImg from "../assets/logo.jpg";
 
 export default function Home() {
   const [q, setQ] = useState("");

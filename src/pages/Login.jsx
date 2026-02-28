@@ -17,7 +17,7 @@ export default function Login() {
     try {
       const user = await loginUser(email, password);
       console.log("User logged in:", user.uid);
-navigate("/", { replace: true });
+      navigate("/", { replace: true });
     } catch (error) {
       console.log(error.message);
     }
