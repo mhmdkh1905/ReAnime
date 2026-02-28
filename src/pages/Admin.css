@@ -363,11 +363,11 @@
   font-weight: 900;
 }
 
-.form-group {
+.modalOverlay .form-group {
   margin-bottom: 16px;
 }
 
-.form-group label {
+.modalOverlay .form-group label {
   display: block;
   margin-bottom: 8px;
   font-size: 13px;
@@ -375,8 +375,8 @@
   font-weight: 700;
 }
 
-.form-group input,
-.form-group textarea {
+.modalOverlay .form-group input,
+.modalOverlay .form-group textarea {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
@@ -387,20 +387,19 @@
   font-family: inherit;
   transition: border-color 0.18s ease;
 }
-
-.form-group input:focus,
-.form-group textarea:focus {
+.modalOverlay .form-group input:focus,
+.modalOverlay .form-group textarea:focus {
   outline: none;
   border-color: rgba(168, 85, 247, 0.75);
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.18);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
+.modalOverlay .form-group input::placeholder,
+.modalOverlay .form-group textarea::placeholder {
   color: rgba(255, 255, 255, 0.45);
 }
 
-.form-group textarea {
+.modalOverlay .form-group textarea {
   resize: vertical;
   min-height: 80px;
 }
@@ -529,4 +528,12 @@
     flex-direction: column;
     gap: 0;
   }
+}
+
+.access-denied-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 18px;
 }

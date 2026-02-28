@@ -10,6 +10,7 @@ import Footer from "../components/layout/Footer";
 import StoryCallout from "../components/StoryCallout";
 import PostMovieModal from "../components/movie/PostMovieModal";
 import { createMovie } from "../services/movieService";
+import logoImg from "../assets/logo.jpg";
 
 export default function Home() {
   const [q, setQ] = useState("");
@@ -64,12 +65,10 @@ export default function Home() {
     };
   }, [currentUser]);
 
-  // סגירת dropdown כשעוברים דף
   useEffect(() => {
     setIsOpen(false);
   }, [navigate]);
 
-  // סגירה בלחיצה מחוץ
   useEffect(() => {
     const onDocClick = (e) => {
       if (!e.target.closest(".homeProfileWrap")) setIsOpen(false);
@@ -207,6 +206,18 @@ export default function Home() {
 
               {isOpen && (
                 <div className="homeMenu">
+                  {profile.role === "admin" && (
+                    <button
+                      className="homeMenuItem"
+                      type="button"
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate("/admin");
+                      }}
+                    >
+                      Admin Dashboard
+                    </button>
+                  )}
                   <button
                     className="homeMenuItem"
                     type="button"

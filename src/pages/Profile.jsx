@@ -1,19 +1,30 @@
 import "../styles/user-profile.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
+import {
+  AiOutlineLike,
+  AiOutlineDislike,
+  AiOutlineEdit,
+  AiOutlineDelete,
+} from "react-icons/ai";
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
 
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../services/authService";
-import { getScenariosByUserId } from "../services/scenarioService";
-import ProfileScenarios from "../components/profile/ProfileScenarios";
+import {
+  getScenariosByUserId,
+  updateScenario,
+  deleteScenario,
+} from "../services/scenarioService";
 
 export default function Profile() {
   const { currentUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [scenarios, setScenarios] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +46,58 @@ export default function Profile() {
     }
     fetchScenarios();
   }, [currentUser]);
+
+  // Handle edit button click
+  const handleEditClick = (scenario) => {
+    setEditingId(scenario.id);
+    setEditContent(scenario.content);
+  };
+
+  // Handle save edit
+  const handleSaveEdit = async (scenarioId) => {
+    if (!editContent.trim()) {
+      alert("Content cannot be empty");
+      return;
+    }
+    try {
+      await updateScenario(scenarioId, { content: editContent.trim() });
+      setScenarios(
+        scenarios.map((s) =>
+          s.id === scenarioId
+            ? { ...s, content: editContent.trim(), isEdited: true }
+            : s,
+        ),
+      );
+      setEditingId(null);
+      setEditContent("");
+    } catch (error) {
+      console.error("Error updating scenario:", error);
+      alert("Failed to update scenario");
+    }
+  };
+
+  // Handle cancel edit
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditContent("");
+  };
+
+  // Handle delete
+  const handleDelete = async (scenarioId) => {
+    if (!window.confirm("Are you sure you want to delete this scenario?")) {
+      return;
+    }
+    setDeletingId(scenarioId);
+    try {
+      await deleteScenario(scenarioId);
+      setScenarios(scenarios.filter((s) => s.id !== scenarioId));
+    } catch (error) {
+      console.error("Error deleting scenario:", error);
+      alert("Failed to delete scenario");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (!profile) {
     return (
@@ -92,11 +155,83 @@ export default function Profile() {
           {setScenarios ? (
             scenarios.length > 0 ? (
               scenarios.map((scenario) => (
-                <ProfileScenarios
-                  key={scenario.id}
-                  scenario={scenario}
-                  profile={profile}
-                />
+                <div key={scenario.id} className="scenario-card">
+                  <div className="scenario-header">
+                    <img
+                      src={profile.photoURL}
+                      alt="avatar"
+                      className="scenario-avatar"
+                    />
+                    <div>
+                      <span className="scenario-name">
+                        {scenario.movieTitle}
+                      </span>
+                      {scenario.isEdited && (
+                        <span className="badge">Edited</span>
+                      )}
+                      <p className="time">
+                        {scenario.updatedAt?.toDate
+                          ? scenario.updatedAt.toDate().toDateString()
+                          : "Unknown date"}
+                      </p>
+                    </div>
+                    <div className="scenario-owner-actions">
+                      <button
+                        className="action-btn edit-btn-scenario"
+                        onClick={() => handleEditClick(scenario)}
+                        title="Edit"
+                      >
+                        <AiOutlineEdit />
+                      </button>
+                      <button
+                        className="action-btn delete-btn-scenario"
+                        onClick={() => handleDelete(scenario.id)}
+                        disabled={deletingId === scenario.id}
+                        title="Delete"
+                      >
+                        <AiOutlineDelete />
+                      </button>
+                    </div>
+                  </div>
+
+                  {editingId === scenario.id ? (
+                    <div className="edit-mode">
+                      <textarea
+                        className="edit-textarea"
+                        value={editContent}
+                        onChange={(e) => setEditContent(e.target.value)}
+                        rows={5}
+                      />
+                      <div className="edit-actions">
+                        <button
+                          className="save-btn"
+                          onClick={() => handleSaveEdit(scenario.id)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="cancel-btn"
+                          onClick={handleCancelEdit}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="scenario-text">{scenario.content}</p>
+                  )}
+
+                  <div className="scenario-actions">
+                    <AiOutlineLike />
+                    <span>{scenario.likesCount || 0}</span>
+
+                    <AiOutlineDislike />
+                    <span>{scenario.dislikesCount || 0}</span>
+
+                    <FaRegComment />
+                    <span>{scenario.commentsCount || 0}</span>
+                  </div>
+                </div>
               ))
             ) : (
               <p className="no-content">

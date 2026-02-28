@@ -39,6 +39,7 @@ export const createMovie = async (movieData) => {
       title: movieData.title,
       description: movieData.description,
       image: movieData.image || "",
+      trailerURL: movieData.trailerURL || "",
       genre: movieData.genre,
       rating: movieData.rating,
       releaseYear: movieData.releaseYear,

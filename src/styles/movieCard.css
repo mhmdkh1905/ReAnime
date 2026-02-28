@@ -4,7 +4,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: 0.3s ease;
-  width: 220px;
+  width: 240px;
   height: 320px;
 }
 
@@ -32,8 +32,9 @@
   left: 15px;
   right: 15px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .movie-title {
@@ -44,7 +45,6 @@
 
 /* BADGE */
 .movie-badge {
-  padding: 4px 10px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;

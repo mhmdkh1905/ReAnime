@@ -76,7 +76,7 @@ export default function Navbar() {
         {isOpen && (
           <div className="drop-down-menu">
             <ul className="list">
-              {profile?.role === "admin" && (
+              {profile.role === "admin" && (
                 <Link to="/admin" className="link">
                   <li
                     className="element"
@@ -100,6 +100,7 @@ export default function Navbar() {
                   <p className="label">Profile</p>
                 </li>
               </Link>
+
               <div className="separator"></div>
               <li
                 className="element"

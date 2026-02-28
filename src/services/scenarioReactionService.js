@@ -29,16 +29,30 @@ export const likeScenario = async (scenarioId, userId) => {
     const likeRef = doc(scenarioReactionsCollection, `${scenarioId}_${userId}`);
     const existingReaction = await getDoc(likeRef);
 
+    // Get the scenario to find the creator
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+    const scenarioDoc = await getDoc(scenarioRef);
+    if (!scenarioDoc.exists()) {
+      return { success: false, error: "Scenario not found" };
+    }
+    const scenarioData = scenarioDoc.data();
+    const scenarioCreatorId = scenarioData.createdBy;
+
     if (existingReaction.exists()) {
       const currentData = existingReaction.data();
 
       // If already liked, remove the like (toggle off)
-      if (currentReaction.type === "like") {
+      if (currentData.type === "like") {
         await deleteDoc(likeRef);
 
         // Decrement likes count
-        const scenarioRef = doc(db, "scenarios", scenarioId);
         await updateDoc(scenarioRef, { likesCount: increment(-1) });
+
+        // Decrement creator's totalLikes
+        if (scenarioCreatorId && scenarioCreatorId !== userId) {
+          const userRef = doc(db, "users", scenarioCreatorId);
+          await updateDoc(userRef, { totalLikes: increment(-1) });
+        }
 
         return { success: true, action: "removed" };
       }
@@ -53,11 +67,16 @@ export const likeScenario = async (scenarioId, userId) => {
         });
 
         // Decrement dislike, increment like
-        const scenarioRef = doc(db, "scenarios", scenarioId);
         await updateDoc(scenarioRef, {
           likesCount: increment(1),
           dislikesCount: increment(-1),
         });
+
+        // Net +1 for creator's totalLikes (like +1, dislike -1)
+        if (scenarioCreatorId && scenarioCreatorId !== userId) {
+          const userRef = doc(db, "users", scenarioCreatorId);
+          await updateDoc(userRef, { totalLikes: increment(1) });
+        }
 
         return { success: true, action: "changed_to_like" };
       }
@@ -71,8 +90,13 @@ export const likeScenario = async (scenarioId, userId) => {
       createdAt: serverTimestamp(),
     });
 
-    const scenarioRef = doc(db, "scenarios", scenarioId);
     await updateDoc(scenarioRef, { likesCount: increment(1) });
+
+    // Increment creator's totalLikes
+    if (scenarioCreatorId && scenarioCreatorId !== userId) {
+      const userRef = doc(db, "users", scenarioCreatorId);
+      await updateDoc(userRef, { totalLikes: increment(1) });
+    }
 
     return { success: true, action: "added" };
   } catch (error) {
@@ -97,6 +121,15 @@ export const dislikeScenario = async (scenarioId, userId) => {
     );
     const existingReaction = await getDoc(dislikeRef);
 
+    // Get the scenario to find the creator
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+    const scenarioDoc = await getDoc(scenarioRef);
+    if (!scenarioDoc.exists()) {
+      return { success: false, error: "Scenario not found" };
+    }
+    const scenarioData = scenarioDoc.data();
+    const scenarioCreatorId = scenarioData.createdBy;
+
     if (existingReaction.exists()) {
       const currentData = existingReaction.data();
 
@@ -105,7 +138,6 @@ export const dislikeScenario = async (scenarioId, userId) => {
         await deleteDoc(dislikeRef);
 
         // Decrement dislikes count
-        const scenarioRef = doc(db, "scenarios", scenarioId);
         await updateDoc(scenarioRef, { dislikesCount: increment(-1) });
 
         return { success: true, action: "removed" };
@@ -121,11 +153,16 @@ export const dislikeScenario = async (scenarioId, userId) => {
         });
 
         // Decrement like, increment dislike
-        const scenarioRef = doc(db, "scenarios", scenarioId);
         await updateDoc(scenarioRef, {
           likesCount: increment(-1),
           dislikesCount: increment(1),
         });
+
+        // Decrement creator's totalLikes (net -1)
+        if (scenarioCreatorId && scenarioCreatorId !== userId) {
+          const userRef = doc(db, "users", scenarioCreatorId);
+          await updateDoc(userRef, { totalLikes: increment(-1) });
+        }
 
         return { success: true, action: "changed_to_dislike" };
       }
@@ -139,7 +176,6 @@ export const dislikeScenario = async (scenarioId, userId) => {
       createdAt: serverTimestamp(),
     });
 
-    const scenarioRef = doc(db, "scenarios", scenarioId);
     await updateDoc(scenarioRef, { dislikesCount: increment(1) });
 
     return { success: true, action: "added" };
@@ -205,5 +241,27 @@ export const getUserReactions = async (scenarioIds, userId) => {
   } catch (error) {
     console.error("Error getting user reactions:", error);
     return {};
+  }
+};
+
+export const increaseScenarioComentCount = async (scenarioId) => {
+  try {
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+    await updateDoc(scenarioRef, { commentsCount: increment(1) });
+    return { success: true };
+  } catch (error) {
+    console.error("Error increasing comment count:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const decreaseScenarioComentCount = async (scenarioId) => {
+  try {
+    const scenarioRef = doc(db, "scenarios", scenarioId);
+    await updateDoc(scenarioRef, { commentsCount: increment(-1) });
+    return { success: true };
+  } catch (error) {
+    console.error("Error decreasing comment count:", error);
+    return { success: false, error: error.message };
   }
 };

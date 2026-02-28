@@ -13,6 +13,8 @@ import {
   getDoc,
 } from "firebase/firestore";
 
+import { updateUser } from "./usersService";
+
 const scenarioCollection = collection(db, "scenarios");
 const scenarioReactionsCollection = collection(db, "scenarioReactions");
 
@@ -62,6 +64,9 @@ export const createScenario = async ({
 
     const docRef = await addDoc(scenarioCollection, scenarioData);
 
+    updateUser(user.uid, {
+      totalPosterScenarios: increment(1),
+    });
     return {
       success: true,
       id: docRef.id,
@@ -112,6 +117,19 @@ export const updateScenario = async (id, updatedData) => {
 ============================== */
 export const deleteScenario = async (id) => {
   const docRef = doc(db, "scenarios", id);
+  const scenario = await getDoc(docRef);
+  if (scenario.exists()) {
+    const scenarioData = scenario.data();
+    updateUser(scenarioData.createdBy, {
+      totalPosterScenarios: increment(-1),
+    });
+    // Also decrement totalLikes based on scenario's likesCount
+    if (scenarioData.likesCount > 0) {
+      updateUser(scenarioData.createdBy, {
+        totalLikes: increment(-scenarioData.likesCount),
+      });
+    }
+  }
   return await deleteDoc(docRef);
 };
 
@@ -140,6 +158,14 @@ export const createScenarioReaction = async ({
       throw new Error("Missing required fields");
     }
 
+    // Get the scenario to find the creator
+    const scenarioDoc = await getDoc(doc(db, "scenarios", scenarioId));
+    if (!scenarioDoc.exists()) {
+      throw new Error("Scenario not found");
+    }
+    const scenarioData = scenarioDoc.data();
+    const scenarioCreatorId = scenarioData.createdBy;
+
     const snapshot = await getDocs(
       query(
         scenarioReactionsCollection,
@@ -161,6 +187,10 @@ export const createScenarioReaction = async ({
         // Decrement the appropriate counter
         if (type === "like") {
           await updateDoc(scenarioRef, { likesCount: increment(-1) });
+          // Decrement creator's totalLikes
+          if (scenarioCreatorId && scenarioCreatorId !== userId) {
+            updateUser(scenarioCreatorId, { totalLikes: increment(-1) });
+          }
         } else {
           await updateDoc(scenarioRef, { dislikesCount: increment(-1) });
         }
@@ -179,11 +209,19 @@ export const createScenarioReaction = async ({
             likesCount: increment(1),
             dislikesCount: increment(-1),
           });
+          // Increment creator's totalLikes (net +1)
+          if (scenarioCreatorId && scenarioCreatorId !== userId) {
+            updateUser(scenarioCreatorId, { totalLikes: increment(1) });
+          }
         } else {
           await updateDoc(scenarioRef, {
             likesCount: increment(-1),
             dislikesCount: increment(1),
           });
+          // Decrement creator's totalLikes (net -1)
+          if (scenarioCreatorId && scenarioCreatorId !== userId) {
+            updateUser(scenarioCreatorId, { totalLikes: increment(-1) });
+          }
         }
 
         return { success: true, id: existingDoc.id, updated: true };
@@ -202,6 +240,10 @@ export const createScenarioReaction = async ({
     // Increment the appropriate counter
     if (type === "like") {
       await updateDoc(scenarioRef, { likesCount: increment(1) });
+      // Increment creator's totalLikes
+      if (scenarioCreatorId && scenarioCreatorId !== userId) {
+        updateUser(scenarioCreatorId, { totalLikes: increment(1) });
+      }
     } else {
       await updateDoc(scenarioRef, { dislikesCount: increment(1) });
     }
