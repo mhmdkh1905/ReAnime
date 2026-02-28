@@ -13,6 +13,8 @@ import {
   getDoc,
 } from "firebase/firestore";
 
+import { updateUser } from "./usersService";
+
 const scenarioCollection = collection(db, "scenarios");
 const scenarioReactionsCollection = collection(db, "scenarioReactions");
 
@@ -62,6 +64,9 @@ export const createScenario = async ({
 
     const docRef = await addDoc(scenarioCollection, scenarioData);
 
+    updateUser(user.uid, {
+      totalPosterScenarios: increment(1),
+    });
     return {
       success: true,
       id: docRef.id,
@@ -112,6 +117,13 @@ export const updateScenario = async (id, updatedData) => {
 ============================== */
 export const deleteScenario = async (id) => {
   const docRef = doc(db, "scenarios", id);
+  const scenario = await getDoc(docRef);
+  if (scenario.exists()) {
+    const scenarioData = scenario.data();
+    updateUser(scenarioData.createdBy, {
+      totalPosterScenarios: increment(-1),
+    });
+  }
   return await deleteDoc(docRef);
 };
 

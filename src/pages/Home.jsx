@@ -64,12 +64,10 @@ export default function Home() {
     };
   }, [currentUser]);
 
-  // סגירת dropdown כשעוברים דף
   useEffect(() => {
     setIsOpen(false);
   }, [navigate]);
 
-  // סגירה בלחיצה מחוץ
   useEffect(() => {
     const onDocClick = (e) => {
       if (!e.target.closest(".homeProfileWrap")) setIsOpen(false);
@@ -207,6 +205,18 @@ export default function Home() {
 
               {isOpen && (
                 <div className="homeMenu">
+                  {profile.role === "admin" && (
+                    <button
+                      className="homeMenuItem"
+                      type="button"
+                      onClick={() => {
+                        setIsOpen(false);
+                        navigate("/admin");
+                      }}
+                    >
+                      Admin Dashboard
+                    </button>
+                  )}
                   <button
                     className="homeMenuItem"
                     type="button"

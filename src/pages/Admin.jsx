@@ -19,11 +19,13 @@ import {
 } from "../services/commentService";
 import { getAllUsers, updateUser, deleteUser } from "../services/usersService";
 import "./Admin.css";
+import { getUserProfile } from "../services/authService";
 
 export default function Admin() {
   const { userLoggedIn, currentUser } = useAuth();
   const navigate = useNavigate();
 
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
   const [activeTab, setActiveTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [movies, setMovies] = useState([]);
@@ -39,6 +41,21 @@ export default function Admin() {
     scenarios: 0,
     comments: 0,
   });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!currentUser) {
+        setLoading(false);
+        return;
+      }
+
+      const profile = await getUserProfile(currentUser.uid);
+      setCurrentUserProfile(profile);
+      setLoading(false);
+    };
+
+    fetchUserProfile();
+  }, [currentUser]);
 
   useEffect(() => {
     if (!userLoggedIn) {
@@ -150,6 +167,24 @@ export default function Admin() {
       alert("Failed to delete comment");
     }
   };
+
+  if (!currentUserProfile || currentUserProfile.role !== "admin") {
+    return (
+      <div className="admin-page">
+        <div className="admin-container">
+          <div className="admin-header">
+            <h1>Access Denied</h1>
+          </div>
+          <div className="access-denied-message">
+            You do not have permission to access this page.
+          </div>
+          <button className="back-home-btn" onClick={() => navigate("/")}>
+            ← Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
