@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import RootLayout from "../components/layout/RootLayout";
-import Home from "../pages/Home";
-import Movie from "../pages/Movie";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import ForgetPassword from "../pages/ForgetPassword";
-import Profile from "../pages/Profile";
-import Admin from "../pages/Admin";
+import RootLayout from "../components/layout/rootLayout/RootLayout";
+import Home from "../pages/home/Home";
+import Movie from "../pages/movie/Movie";
+import Login from "../pages/login-register/Login";
+import Register from "../pages/login-register/Register";
+import ForgetPassword from "../pages/forgetPassword/ForgetPassword";
+import Profile from "../pages/profile/Profile";
+import Admin from "../pages/admin/Admin";
 const router = createBrowserRouter([
   {
     path: "/",

@@ -27,9 +27,7 @@ export const getAllComments = async () => {
   }));
 };
 
-/* =======================================================
-   CREATE COMMENT
-======================================================= */
+
 export const createComment = async ({
   scenarioId,
   movieId = null,
@@ -65,9 +63,7 @@ export const createComment = async ({
   }
 };
 
-/* =======================================================
-   GET COMMENTS BY SCENARIO (ONE TIME)
-======================================================= */
+
 export const getCommentsByScenario = async (scenarioId) => {
   const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
 
@@ -79,9 +75,7 @@ export const getCommentsByScenario = async (scenarioId) => {
   }));
 };
 
-/* =======================================================
-   REAL-TIME COMMENTS
-======================================================= */
+
 export const subscribeToComments = (scenarioId, callback) => {
   const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
 
@@ -100,9 +94,6 @@ export const subscribeToComments = (scenarioId, callback) => {
   );
 };
 
-/* =======================================================
-   UPDATE COMMENT
-======================================================= */
 export const updateComment = async (commentId, newContent) => {
   try {
     const commentRef = doc(db, "comments", commentId);
@@ -120,9 +111,7 @@ export const updateComment = async (commentId, newContent) => {
   }
 };
 
-/* =======================================================
-   DELETE COMMENT
-======================================================= */
+
 export const deleteComment = async (commentId) => {
   try {
     const commentRef = doc(db, "comments", commentId);
@@ -135,9 +124,7 @@ export const deleteComment = async (commentId) => {
   }
 };
 
-/* =======================================================
-   LIKE COMMENT
-======================================================= */
+
 export const likeComment = async (commentId, userId) => {
   try {
     const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
@@ -160,9 +147,7 @@ export const likeComment = async (commentId, userId) => {
   }
 };
 
-/* =======================================================
-   UNLIKE COMMENT
-======================================================= */
+
 export const unlikeComment = async (commentId, userId) => {
   try {
     const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
@@ -181,9 +166,7 @@ export const unlikeComment = async (commentId, userId) => {
   }
 };
 
-/* =======================================================
-   CHECK IF USER LIKED COMMENT
-======================================================= */
+
 export const hasUserLikedComment = async (commentId, userId) => {
   const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);
   const likeSnap = await getDoc(likeRef);

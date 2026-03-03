@@ -1,16 +1,91 @@
-# React + Vite
+# ReAnime - Creative Anime Community Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ReAnime is a community-driven web platform designed for anime fans. It transforms passive anime watching into an active, creative experience where users participate in storytelling rather than only consuming content.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Explore Anime**: Browse a curated collection of anime movies and series
+- **Watch Clips**: View short video clips and trailers for each title
+- **Read Scenarios**: Dive into key story scenario summaries
+- **Creative Writing**: Rewrite scenarios from your own perspective
+  - **Actor Mode**: Imagine yourself inside the story as a character
+  - **Creator Mode**: Rewrite the plot as the author
+- **Community Engagement**: Interact with other creative fans through likes, dislikes, and comments
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v18 or higher)
+- npm or yarn
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+## Tech Stack
+
+- **Frontend**: React + Vite
+- **Styling**: CSS with responsive design
+- **Backend**: Firebase (Authentication, Firestore, Storage)
+- **Routing**: React Router
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── homeSections/   # Home page sections
+│   ├── layout/         # Layout components (navbar, footer)
+│   └── movie/          # Movie-related components
+├── pages/              # Page components
+│   ├── admin/          # Admin dashboard
+│   ├── home/           # Home page
+│   ├── login-register/ # Authentication pages
+│   ├── movie/          # Movie detail page
+│   └── profile/        # User profile page
+├── services/           # API services
+├── context/            # React context providers
+└── router/             # Route configuration
+```
+
+## User Experience
+
+The experience is designed to be simple, immersive, and community-focused:
+
+1. **Homepage**: Browse a grid of anime movies and series
+2. **Movie Detail**: Select a title to view video clips and scenario summaries
+3. **Creative Writing**: Submit your own interpretation through a clear writing interface
+4. **Community**: Engage with other users' creative works through feedback and discussion
+
+## Contributing
+
+We welcome contributions from the community! Feel free to submit pull requests or create issues for bug reports and feature suggestions.
+
+## License
+
+This project is for educational and personal use.

@@ -16,10 +16,7 @@ import {
 
 const scenarioReactionsCollection = collection(db, "scenarioReactions");
 
-/* =======================================================
-   LIKE A SCENARIO
-   - Adds like, removes dislike if exists
-======================================================= */
+
 export const likeScenario = async (scenarioId, userId) => {
   if (!scenarioId || !userId) {
     return { success: false, error: "Missing required fields" };
@@ -29,7 +26,7 @@ export const likeScenario = async (scenarioId, userId) => {
     const likeRef = doc(scenarioReactionsCollection, `${scenarioId}_${userId}`);
     const existingReaction = await getDoc(likeRef);
 
-    // Get the scenario to find the creator
+   
     const scenarioRef = doc(db, "scenarios", scenarioId);
     const scenarioDoc = await getDoc(scenarioRef);
     if (!scenarioDoc.exists()) {
@@ -41,14 +38,14 @@ export const likeScenario = async (scenarioId, userId) => {
     if (existingReaction.exists()) {
       const currentData = existingReaction.data();
 
-      // If already liked, remove the like (toggle off)
+      
       if (currentData.type === "like") {
         await deleteDoc(likeRef);
 
-        // Decrement likes count
+        
         await updateDoc(scenarioRef, { likesCount: increment(-1) });
 
-        // Decrement creator's totalLikes
+        
         if (scenarioCreatorId && scenarioCreatorId !== userId) {
           const userRef = doc(db, "users", scenarioCreatorId);
           await updateDoc(userRef, { totalLikes: increment(-1) });
@@ -57,7 +54,7 @@ export const likeScenario = async (scenarioId, userId) => {
         return { success: true, action: "removed" };
       }
 
-      // If previously disliked, change to like
+      
       if (currentData.type === "dislike") {
         await setDoc(likeRef, {
           scenarioId,
@@ -66,13 +63,13 @@ export const likeScenario = async (scenarioId, userId) => {
           createdAt: serverTimestamp(),
         });
 
-        // Decrement dislike, increment like
+       
         await updateDoc(scenarioRef, {
           likesCount: increment(1),
           dislikesCount: increment(-1),
         });
 
-        // Net +1 for creator's totalLikes (like +1, dislike -1)
+       
         if (scenarioCreatorId && scenarioCreatorId !== userId) {
           const userRef = doc(db, "users", scenarioCreatorId);
           await updateDoc(userRef, { totalLikes: increment(1) });
@@ -82,7 +79,7 @@ export const likeScenario = async (scenarioId, userId) => {
       }
     }
 
-    // First time liking
+   
     await setDoc(likeRef, {
       scenarioId,
       userId,
@@ -92,7 +89,7 @@ export const likeScenario = async (scenarioId, userId) => {
 
     await updateDoc(scenarioRef, { likesCount: increment(1) });
 
-    // Increment creator's totalLikes
+    
     if (scenarioCreatorId && scenarioCreatorId !== userId) {
       const userRef = doc(db, "users", scenarioCreatorId);
       await updateDoc(userRef, { totalLikes: increment(1) });
@@ -105,10 +102,7 @@ export const likeScenario = async (scenarioId, userId) => {
   }
 };
 
-/* =======================================================
-   DISLIKE A SCENARIO
-   - Adds dislike, removes like if exists
-======================================================= */
+
 export const dislikeScenario = async (scenarioId, userId) => {
   if (!scenarioId || !userId) {
     return { success: false, error: "Missing required fields" };
@@ -121,7 +115,7 @@ export const dislikeScenario = async (scenarioId, userId) => {
     );
     const existingReaction = await getDoc(dislikeRef);
 
-    // Get the scenario to find the creator
+ 
     const scenarioRef = doc(db, "scenarios", scenarioId);
     const scenarioDoc = await getDoc(scenarioRef);
     if (!scenarioDoc.exists()) {
@@ -133,17 +127,17 @@ export const dislikeScenario = async (scenarioId, userId) => {
     if (existingReaction.exists()) {
       const currentData = existingReaction.data();
 
-      // If already disliked, remove the dislike (toggle off)
+    
       if (currentData.type === "dislike") {
         await deleteDoc(dislikeRef);
 
-        // Decrement dislikes count
+       
         await updateDoc(scenarioRef, { dislikesCount: increment(-1) });
 
         return { success: true, action: "removed" };
       }
 
-      // If previously liked, change to dislike
+      
       if (currentData.type === "like") {
         await setDoc(dislikeRef, {
           scenarioId,
@@ -152,13 +146,13 @@ export const dislikeScenario = async (scenarioId, userId) => {
           createdAt: serverTimestamp(),
         });
 
-        // Decrement like, increment dislike
+       
         await updateDoc(scenarioRef, {
           likesCount: increment(-1),
           dislikesCount: increment(1),
         });
 
-        // Decrement creator's totalLikes (net -1)
+       
         if (scenarioCreatorId && scenarioCreatorId !== userId) {
           const userRef = doc(db, "users", scenarioCreatorId);
           await updateDoc(userRef, { totalLikes: increment(-1) });
@@ -168,7 +162,7 @@ export const dislikeScenario = async (scenarioId, userId) => {
       }
     }
 
-    // First time disliking
+    
     await setDoc(dislikeRef, {
       scenarioId,
       userId,
@@ -185,9 +179,7 @@ export const dislikeScenario = async (scenarioId, userId) => {
   }
 };
 
-/* =======================================================
-   GET USER'S REACTION FOR A SCENARIO
-======================================================= */
+
 export const getUserReaction = async (scenarioId, userId) => {
   if (!scenarioId || !userId) {
     return null;
@@ -201,7 +193,7 @@ export const getUserReaction = async (scenarioId, userId) => {
     const reactionDoc = await getDoc(reactionRef);
 
     if (reactionDoc.exists()) {
-      return reactionDoc.data().type; // "like" or "dislike" or null
+      return reactionDoc.data().type; 
     }
 
     return null;
@@ -211,10 +203,7 @@ export const getUserReaction = async (scenarioId, userId) => {
   }
 };
 
-/* =======================================================
-   GET ALL USER REACTIONS FOR MULTIPLE SCENARIOS
-   Returns: { scenarioId1: "like", scenarioId2: "dislike", ... }
-======================================================= */
+
 export const getUserReactions = async (scenarioIds, userId) => {
   if (!scenarioIds || scenarioIds.length === 0 || !userId) {
     return {};
@@ -223,7 +212,7 @@ export const getUserReactions = async (scenarioIds, userId) => {
   try {
     const reactions = {};
 
-    // Fetch each reaction individually (more reliable than complex query)
+    
     const promises = scenarioIds.map(async (scenarioId) => {
       const reactionRef = doc(
         scenarioReactionsCollection,

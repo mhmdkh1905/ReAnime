@@ -12,7 +12,7 @@ import {
 
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-//Email login
+
 export const loginUser = async (email, password) => {
   const userCredential = await signInWithEmailAndPassword(
     auth,
@@ -23,7 +23,7 @@ export const loginUser = async (email, password) => {
   return userCredential.user;
 };
 
-// Google Login
+
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const result = await signInWithPopup(auth, provider);
@@ -32,7 +32,7 @@ export const loginWithGoogle = async () => {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
 
-  // If user does not exist in Firestore, create it
+ 
   if (!userSnap.exists()) {
     await setDoc(userRef, {
       uid: user.uid,
@@ -49,7 +49,7 @@ export const loginWithGoogle = async () => {
   return user;
 };
 
-//Register user
+
 export const registerUser = async (name, email, password) => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
@@ -59,12 +59,12 @@ export const registerUser = async (name, email, password) => {
 
   const user = userCredential.user;
 
-  // Update displayName in Firebase Auth
+  
   await updateProfile(user, {
     displayName: name,
   });
 
-  // Create Firestore user document
+
   await setDoc(doc(db, "users", user.uid), {
     uid: user.uid,
     name: name,
@@ -79,27 +79,26 @@ export const registerUser = async (name, email, password) => {
   return user;
 };
 
-// Logout
 export const logoutUser = async () => {
   await signOut(auth);
 };
 
-// Observe Auth State
+
 export const observeAuthState = (callback) => {
   return onAuthStateChanged(auth, callback);
 };
 
-//Get current user
+
 export const getCurrentUser = () => {
   return auth.currentUser;
 };
 
-//Reset password
+
 export const resetPassword = async (email) => {
   await sendPasswordResetEmail(auth, email);
 };
 
-//Get user details
+
 export const getUserProfile = async (uid) => {
   const userRef = doc(db, "users", uid);
   const userSnap = await getDoc(userRef);

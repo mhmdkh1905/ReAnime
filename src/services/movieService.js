@@ -14,9 +14,7 @@ import {
 
 const moviesCollection = collection(db, "movies");
 
-/**
- * CREATE MOVIE
- */
+
 export const createMovie = async (movieData) => {
   try {
     if (!movieData.title) {
@@ -58,9 +56,7 @@ export const createMovie = async (movieData) => {
   }
 };
 
-/**
- * GET ALL MOVIES (sorted by newest)
- */
+
 export const getAllMovies = async () => {
   try {
     const q = query(moviesCollection, orderBy("createdAt", "desc"));
@@ -76,9 +72,7 @@ export const getAllMovies = async () => {
   }
 };
 
-/**
- * GET ONE MOVIE
- */
+
 export const getMovieById = async (movieId) => {
   try {
     const movieRef = doc(db, "movies", movieId);
@@ -93,9 +87,7 @@ export const getMovieById = async (movieId) => {
   }
 };
 
-/**
- * UPDATE MOVIE
- */
+
 export const updateMovie = async (movieId, updatedData) => {
   try {
     const movieRef = doc(db, "movies", movieId);
@@ -110,9 +102,7 @@ export const updateMovie = async (movieId, updatedData) => {
   }
 };
 
-/**
- * DELETE MOVIE
- */
+
 export const deleteMovie = async (movieId) => {
   try {
     const movieRef = doc(db, "movies", movieId);
