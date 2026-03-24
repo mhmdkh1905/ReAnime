@@ -22,7 +22,7 @@ export const createUser = async (userData) => {
     if (!userData.email) {
       throw new Error("Email is required");
     }
-
+    //This is the most important issue in this file: users should almost certainly use the auth UID as the Firestore document id, not an auto-generated id.
     const docRef = await addDoc(usersCollection, {
       name: userData.name,
       email: userData.email,

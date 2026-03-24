@@ -44,34 +44,30 @@ export default function Movie() {
       return;
     }
 
-    
     setUserReactions((prev) => {
       const currentReaction = prev[scenarioId];
 
-      
       if (currentReaction === type) {
         const { [scenarioId]: _, ...rest } = prev;
         return rest;
       }
 
-      
       return {
         ...prev,
         [scenarioId]: type,
       };
     });
 
-    
     createScenarioReaction({
+      //`createScenarioReaction` is a confusing name for a function used as both create/update/delete toggle. Consider `toggleScenarioReaction`.
       scenarioId,
       userId: currentUser.uid,
       type,
     }).then(() => {
-      
       getScenariosByMovie(id).then(setScenarios);
     });
   }
-  
+
   useEffect(() => {
     const fetchMovie = async () => {
       try {
@@ -112,7 +108,6 @@ export default function Movie() {
     fetchUserReactions();
   }, [currentUser]);
 
-  
   useEffect(() => {
     const fetchScenarios = async () => {
       if (!id) return;
@@ -175,12 +170,10 @@ export default function Movie() {
   const getEmbedUrl = (url) => {
     if (!url) return "";
 
-    
     if (url.includes("watch?v=")) {
       return url.replace("watch?v=", "embed/");
     }
 
-    
     if (url.includes("youtu.be/")) {
       const videoId = url.split("youtu.be/")[1];
       return `https://www.youtube.com/embed/${videoId}`;
@@ -256,7 +249,6 @@ export default function Movie() {
           )}
         </section>
 
-       
         <div className="movieHero">
           <h3 className="movieTitle">{movie.title}</h3>
           <span className="moviePill">
@@ -264,13 +256,11 @@ export default function Movie() {
           </span>
         </div>
 
-    
         <section className="panel">
           <h2 className="panelTitle">{movie.title}</h2>
           <p className="panelText">{movie.description}</p>
         </section>
 
-      
         <section className="panel">
           <h2 className="panelTitle">The Original Scenario</h2>
           <p className="panelText">{movie.originalScenario}</p>
@@ -283,7 +273,6 @@ export default function Movie() {
           </button>
         </section>
 
-       
         <section className="panel">
           <h2 className="panelTitle">Write Your Scenario</h2>
           <p className="panelHint">Choose your mode:</p>
@@ -337,7 +326,6 @@ export default function Movie() {
           </div>
         </section>
 
-       
         <section className="panel">
           <div className="communityHeader">
             <h2 className="panelTitle" style={{ margin: 0 }}>
@@ -426,3 +414,5 @@ export default function Movie() {
     </div>
   );
 }
+
+//Strong feature page, but too many responsibilities in one component and too much reliance on full refetches.

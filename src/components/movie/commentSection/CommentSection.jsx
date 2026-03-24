@@ -18,15 +18,15 @@ export default function CommentSection({ scenarioId, movieId }) {
   const [posting, setPosting] = useState(false);
 
   useEffect(() => {
+    //This is one of the most important bugs in the UI layer. The effect depends on `comments.length`, so every change in comment count re-subscribes to Firestore. The dependency should be just `[scenarioId]`.
     if (!scenarioId) return;
 
-    
     const unsub = subscribeToComments(scenarioId, (data) => {
       setComments(data);
     });
 
     return () => unsub();
-  }, [scenarioId, comments.length]); 
+  }, [scenarioId, comments.length]);
 
   const handlePost = async () => {
     if (!text.trim()) return;
@@ -57,7 +57,7 @@ export default function CommentSection({ scenarioId, movieId }) {
       alert("Error posting comment");
     }
 
-    increaseScenarioComentCount(scenarioId); 
+    increaseScenarioComentCount(scenarioId);
     setPosting(false);
   };
 

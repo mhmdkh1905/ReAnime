@@ -8,6 +8,7 @@ import Register from "../pages/login-register/Register";
 import ForgetPassword from "../pages/forgetPassword/ForgetPassword";
 import Profile from "../pages/profile/Profile";
 import Admin from "../pages/admin/Admin";
+//Router definition is readable and simple.
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,9 +31,12 @@ const router = createBrowserRouter([
     path: "/forget-password",
     element: <ForgetPassword />,
   },
+  //`/admin` should ideally use a route guard like `<ProtectedRoute requireRole="admin" />`.
   {
     path: "/admin",
     element: <Admin />,
   },
 ]);
 export default router;
+
+// There is no catch-all `*` route / 404 page. In production apps, missing routes should render a not-found page, not a blank or broken screen.

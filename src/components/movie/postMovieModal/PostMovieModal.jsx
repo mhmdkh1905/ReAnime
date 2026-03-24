@@ -34,7 +34,7 @@ export default function PostMovieModal({ isOpen, onClose, onCreated }) {
         genre: genre.trim(),
         image: image.trim() || "",
       });
-
+      //onCreated && onCreated(id)` is okay, but use optional chaining style `onCreated?.(id)` for readability.
       onCreated && onCreated(id);
       // reset
       setTitle("");

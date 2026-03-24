@@ -47,13 +47,11 @@ export default function Profile() {
     fetchScenarios();
   }, [currentUser]);
 
-  
   const handleEditClick = (scenario) => {
     setEditingId(scenario.id);
     setEditContent(scenario.content);
   };
 
- 
   const handleSaveEdit = async (scenarioId) => {
     if (!editContent.trim()) {
       alert("Content cannot be empty");
@@ -98,6 +96,7 @@ export default function Profile() {
   };
 
   if (!profile) {
+    // `if (!profile)` shows loading forever even when there is no logged-in user. This should distinguish “loading” from “unauthorized / no user”.
     return (
       <div className="profile-page">
         <div className="container">
@@ -113,7 +112,8 @@ export default function Profile() {
     <div className="profile-page">
       <div className="container">
         <button className="back-btn" onClick={() => navigate("/")}>
-          ← Back to Home
+          ← Back to Home Back button should include `type="button"` for safety
+          {/* if the DOM structure changes later */}
         </button>
 
         <div className="profile-card">
@@ -144,8 +144,6 @@ export default function Profile() {
               </div>
             </div>
           </div>
-
-         
         </div>
 
         <h3 className="section-title">My Scenarios</h3>

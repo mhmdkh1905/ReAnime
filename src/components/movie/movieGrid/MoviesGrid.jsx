@@ -9,6 +9,7 @@ export default function MoviesGrid({ title, data }) {
         {data.map((item, index) => (
           <MovieCard
             key={index}
+            //Using `index` as React key is not ideal. Use `item.id`
             title={item.title}
             image={item.image}
             type={item.type}

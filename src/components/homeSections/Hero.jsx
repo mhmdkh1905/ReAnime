@@ -11,3 +11,4 @@ export default function Hero() {
     </section>
   );
 }
+//Clean and simple presentational component.

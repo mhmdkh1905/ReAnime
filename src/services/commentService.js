@@ -8,7 +8,7 @@ import {
   getDoc,
   query,
   where,
-  orderBy,
+  orderBy, //`orderBy` is imported but never used. Remove it.
   serverTimestamp,
   increment,
   onSnapshot,
@@ -26,7 +26,6 @@ export const getAllComments = async () => {
     ...doc.data(),
   }));
 };
-
 
 export const createComment = async ({
   scenarioId,
@@ -62,7 +61,7 @@ export const createComment = async ({
     return { success: false, error: error.message };
   }
 };
-
+// `createComment` is clear, but input validation is weak. It should also reject missing `scenarioId`, empty `content`, or missing `user.uid` before writing.
 
 export const getCommentsByScenario = async (scenarioId) => {
   const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
@@ -74,7 +73,6 @@ export const getCommentsByScenario = async (scenarioId) => {
     ...doc.data(),
   }));
 };
-
 
 export const subscribeToComments = (scenarioId, callback) => {
   const q = query(commentsCollection, where("scenarioId", "==", scenarioId));
@@ -97,6 +95,7 @@ export const subscribeToComments = (scenarioId, callback) => {
 export const updateComment = async (commentId, newContent) => {
   try {
     const commentRef = doc(db, "comments", commentId);
+    //`updateComment` lacks authorization checks at the service level. You rely entirely on the UI to hide edit/delete actions.
 
     await updateDoc(commentRef, {
       content: newContent,
@@ -111,10 +110,10 @@ export const updateComment = async (commentId, newContent) => {
   }
 };
 
-
 export const deleteComment = async (commentId) => {
   try {
     const commentRef = doc(db, "comments", commentId);
+    // Same issue for `deleteComment`: there is no service-layer ownership/role protection here.
     await deleteDoc(commentRef);
 
     return { success: true };
@@ -123,7 +122,6 @@ export const deleteComment = async (commentId) => {
     return { success: false, error: error.message };
   }
 };
-
 
 export const likeComment = async (commentId, userId) => {
   try {
@@ -138,6 +136,7 @@ export const likeComment = async (commentId, userId) => {
 
     await updateDoc(commentRef, {
       likesCount: increment(1),
+      // `likeComment` always increments likes and uses `setDoc` without checking whether the user already liked the comment. Calling this twice can inflate `likesCount`.
     });
 
     return { success: true };
@@ -146,7 +145,6 @@ export const likeComment = async (commentId, userId) => {
     return { success: false, error: error.message };
   }
 };
-
 
 export const unlikeComment = async (commentId, userId) => {
   try {
@@ -157,6 +155,7 @@ export const unlikeComment = async (commentId, userId) => {
 
     await updateDoc(commentRef, {
       likesCount: increment(-1),
+      // `unlikeComment` always decrements likes, even if no like document exists. This can push counts negative.
     });
 
     return { success: true };
@@ -165,7 +164,6 @@ export const unlikeComment = async (commentId, userId) => {
     return { success: false, error: error.message };
   }
 };
-
 
 export const hasUserLikedComment = async (commentId, userId) => {
   const likeRef = doc(commentLikesCollection, `${commentId}_${userId}`);

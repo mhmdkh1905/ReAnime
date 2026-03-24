@@ -1,6 +1,7 @@
 import { AiOutlineLike, AiOutlineDislike } from "react-icons/ai";
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
 export default function ProfileScenarios(props) {
+  //Accepting `props` is fine, but destructuring would make the component easier to read.
   return (
     <div className="scenario-card">
       <div className="scenario-header">

@@ -8,6 +8,7 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+//This extra `getCurrentUser` duplicates similar auth access in the service layer. Choose one source of truth.
 export const getCurrentUser = () => {
   return auth.currentUser;
 };

@@ -17,17 +17,16 @@ import { updateUser } from "./usersService";
 
 const scenarioCollection = collection(db, "scenarios");
 const scenarioReactionsCollection = collection(db, "scenarioReactions");
-
+//`scenarioReactionsCollection` here duplicates the concern handled in `scenarioReactionService.js`. This is an architecture smell.
 
 export const createScenario = async ({
   movieId,
   movieTitle,
   title,
   content,
-  user, 
+  user,
 }) => {
   try {
-    
     if (!movieId || !title || !content || !user?.uid) {
       throw new Error("Missing required fields");
     }
@@ -39,23 +38,19 @@ export const createScenario = async ({
       titleLowercase: title.toLowerCase(),
       content,
 
-      
       createdBy: user.uid,
       createdByName: user.name || user.displayName || "Anonymous",
       userPhotoURL: user.photoURL || "",
 
-      
       likesCount: 0,
       dislikesCount: 0,
       commentsCount: 0,
       viewsCount: 0,
       reportCount: 0,
 
-      
       status: "published",
       isEdited: false,
 
-      
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
@@ -78,7 +73,6 @@ export const createScenario = async ({
   }
 };
 
-
 export const getAllScenarios = async () => {
   const snapshot = await getDocs(scenarioCollection);
   return snapshot.docs.map((doc) => ({
@@ -86,7 +80,6 @@ export const getAllScenarios = async () => {
     ...doc.data(),
   }));
 };
-
 
 export const getScenariosByMovie = async (movieId) => {
   const q = query(scenarioCollection, where("movieId", "==", movieId));
@@ -97,13 +90,11 @@ export const getScenariosByMovie = async (movieId) => {
   }));
 };
 
-
 export const updateScenario = async (id, updatedData) => {
   const docRef = doc(db, "scenarios", id);
-  updatedData.updatedAt = serverTimestamp(); 
+  updatedData.updatedAt = serverTimestamp();
   return await updateDoc(docRef, updatedData);
 };
-
 
 export const deleteScenario = async (id) => {
   const docRef = doc(db, "scenarios", id);
@@ -113,7 +104,7 @@ export const deleteScenario = async (id) => {
     updateUser(scenarioData.createdBy, {
       totalPosterScenarios: increment(-1),
     });
-    
+
     if (scenarioData.likesCount > 0) {
       updateUser(scenarioData.createdBy, {
         totalLikes: increment(-scenarioData.likesCount),
@@ -122,7 +113,6 @@ export const deleteScenario = async (id) => {
   }
   return await deleteDoc(docRef);
 };
-
 
 export const getScenariosByUserId = async (userId) => {
   const q = query(scenarioCollection, where("createdBy", "==", userId));
@@ -133,18 +123,12 @@ export const getScenariosByUserId = async (userId) => {
   }));
 };
 
-
-export const createScenarioReaction = async ({
-  scenarioId,
-  userId,
-  type, 
-}) => {
+export const createScenarioReaction = async ({ scenarioId, userId, type }) => {
   try {
     if (!scenarioId || !userId || !type) {
       throw new Error("Missing required fields");
     }
 
-    
     const scenarioDoc = await getDoc(doc(db, "scenarios", scenarioId));
     if (!scenarioDoc.exists()) {
       throw new Error("Scenario not found");
@@ -167,13 +151,11 @@ export const createScenarioReaction = async ({
       const existingData = existingDoc.data();
 
       if (existingData.type === type) {
-       
         await deleteDoc(doc(db, "scenarioReactions", existingDoc.id));
 
-        
         if (type === "like") {
           await updateDoc(scenarioRef, { likesCount: increment(-1) });
-          
+
           if (scenarioCreatorId && scenarioCreatorId !== userId) {
             updateUser(scenarioCreatorId, { totalLikes: increment(-1) });
           }
@@ -183,19 +165,17 @@ export const createScenarioReaction = async ({
 
         return { success: true, id: existingDoc.id, removed: true };
       } else {
-       
         await updateDoc(doc(db, "scenarioReactions", existingDoc.id), {
           type,
           createdAt: serverTimestamp(),
         });
 
-        
         if (type === "like") {
           await updateDoc(scenarioRef, {
             likesCount: increment(1),
             dislikesCount: increment(-1),
-          }); 
-          
+          });
+
           if (scenarioCreatorId && scenarioCreatorId !== userId) {
             updateUser(scenarioCreatorId, { totalLikes: increment(1) });
           }
@@ -204,7 +184,7 @@ export const createScenarioReaction = async ({
             likesCount: increment(-1),
             dislikesCount: increment(1),
           });
-         
+
           if (scenarioCreatorId && scenarioCreatorId !== userId) {
             updateUser(scenarioCreatorId, { totalLikes: increment(-1) });
           }
@@ -214,7 +194,6 @@ export const createScenarioReaction = async ({
       }
     }
 
-    
     const reactionData = {
       scenarioId,
       userId,
@@ -223,10 +202,9 @@ export const createScenarioReaction = async ({
     };
     const docRef = await addDoc(scenarioReactionsCollection, reactionData);
 
-    
     if (type === "like") {
       await updateDoc(scenarioRef, { likesCount: increment(1) });
-      
+
       if (scenarioCreatorId && scenarioCreatorId !== userId) {
         updateUser(scenarioCreatorId, { totalLikes: increment(1) });
       }
@@ -247,7 +225,6 @@ export const createScenarioReaction = async ({
   }
 };
 
-
 export const getScenarioReactionsByUserId = async (userId) => {
   const q = query(scenarioReactionsCollection, where("userId", "==", userId));
   const snapshot = await getDocs(q);
@@ -266,3 +243,5 @@ export const getScenarioById = async (id) => {
     throw new Error("Scenario not found");
   }
 };
+
+//very large file

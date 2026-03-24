@@ -11,7 +11,7 @@ import StoryCallout from "../../components/homeSections/StoryCallout";
 import PostMovieModal from "../../components/movie/postMovieModal/PostMovieModal";
 import { createMovie } from "../../services/movieService";
 import logoImg from "../../assets/logo.jpg";
-
+//`createMovie` and `logoImg` are imported but unused. Remove them.
 export default function Home() {
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
@@ -24,7 +24,6 @@ export default function Home() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
- 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -40,7 +39,6 @@ export default function Home() {
 
     fetchMovies();
   }, []);
-
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQ(q.trim()), 240);
@@ -67,6 +65,7 @@ export default function Home() {
 
   useEffect(() => {
     setIsOpen(false);
+    //`useEffect(() => setIsOpen(false), [navigate])` is not meaningful. `navigate` is a stable function reference; this effect does not express a real dependency and should be removed.
   }, [navigate]);
 
   useEffect(() => {
@@ -86,7 +85,6 @@ export default function Home() {
   const [showPostModal, setShowPostModal] = useState(false);
 
   const handleCreatedMovie = async (id) => {
-   
     try {
       setLoading(true);
       const data = await getAllMovies();
@@ -354,3 +352,5 @@ export default function Home() {
     </div>
   );
 }
+
+// This page is doing too much: movie fetching, auth/profile fetching, search debounce, dropdown management, logout flow, modal orchestration, and rendering. Break this into smaller hooks/components

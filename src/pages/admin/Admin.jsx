@@ -24,7 +24,7 @@ import {
 } from "../../services/usersService";
 import "./Admin.css";
 import { getUserProfile } from "../../services/authService";
-
+//Several imports are unused (`getMovieById`, `getScenarioById`, `getCommentsByScenario`). Remove them.
 export default function Admin() {
   const { userLoggedIn, currentUser } = useAuth();
   const navigate = useNavigate();
@@ -92,6 +92,7 @@ export default function Admin() {
   };
 
   const handleDeleteUser = async (userId) => {
+    // Deleting a user and then manually deleting related movies, scenarios, and comments is thoughtful. However, all of this is happening client-side with multiple sequential writes. This is fragile and should ideally be handled by backend/cloud functions or batched server logic.
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       await deleteUser(userId);

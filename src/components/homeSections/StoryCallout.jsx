@@ -14,7 +14,8 @@ export default function StoryCallout() {
           Pick any anime above and start writing your own version of the story.
           Be the hero, the villain,
           <br />
-          or rewrite everything as the creator.
+          {/* Avoid `<br />` for layout if CSS spacing can solve it. or rewrite */}
+          everything as the creator.
         </p>
       </div>
     </div>

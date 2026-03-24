@@ -15,6 +15,7 @@ export default function Navbar() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
+    //no error handiling here
     async function fetchProfile() {
       if (currentUser) {
         const data = await getUserProfile(currentUser.uid);
