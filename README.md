@@ -30,7 +30,6 @@ Users can also interact with community submissions through comments, likes, and 
 * [User Experience](#user-experience)
 * [Technology Stack](#technology-stack)
 * [Project Structure](#project-structure)
-* [My Contribution](#my-contribution)
 * [Getting Started](#getting-started)
 * [Firebase Configuration](#firebase-configuration)
 * [Available Scripts](#available-scripts)
@@ -164,28 +163,6 @@ src/
 | `services`     | Firebase and data-access functions     |
 | `context`      | Shared React application state         |
 | `router`       | Application route configuration        |
-
----
-
-## My Contribution
-
-I contributed to the design and development of ReAnime, including:
-
-* Building the application interface using React
-* Creating reusable components and page layouts
-* Implementing routing with React Router
-* Building registration and login workflows
-* Integrating Firebase Authentication
-* Connecting the application to Cloud Firestore
-* Implementing user profiles
-* Developing content-creation workflows
-* Adding comments, likes, and dislikes
-* Creating protected routes
-* Working with Firebase Storage for media management
-* Building responsive layouts
-* Debugging application and Firebase integration issues
-
-> Keep only the bullets that accurately describe the work you personally completed.
 
 ---
 
